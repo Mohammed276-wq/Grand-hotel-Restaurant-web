@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Grand Hotel — Boutique Luxury in the Heart of the City</title>
+<meta name="description" content="Grand Hotel is a boutique upscale hotel offering elegant rooms and suites, a rooftop restaurant, full-service spa, and personalized 24/7 service. Book your stay today." />
+<meta name="keywords" content="Grand Hotel, boutique hotel, luxury hotel booking, upscale hotel rooms, hotel suites, spa hotel, city hotel" />
+<meta name="author" content="Grand Hotel" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Grand Hotel — Boutique Luxury in the Heart of the City" />
+<meta property="og:description" content="Elegant rooms, a celebrated restaurant, and warm, attentive service. Discover Grand Hotel and reserve your stay." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80" />
+<meta property="og:locale" content="en_US" />
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%232B221C%22/><text x=%2250%22 y=%2266%22 font-size=%2246%22 fill=%22%23C1712D%22 text-anchor=%22middle%22 font-family=%22Georgia,serif%22>GH</text></svg>">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          cream: '#FBF4E9',
+          ivory: '#F6ECDC',
+          espresso: '#2B221C',
+          bark: '#4A3B2E',
+          terracotta: '#C1712D',
+          'terracotta-dark': '#A65A22',
+          gold: '#C9A16A',
+        },
+        fontFamily: {
+          serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          sans: ['"Inter"', 'system-ui', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-cream text-espresso font-sans antialiased">
+
+<!-- ============ SKIP LINK ============ -->
+<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:bg-espresso focus:text-cream focus:px-4 focus:py-2 focus:rounded">Skip to main content</a>
+
+<!-- ============ NAVIGATION ============ -->
+<header id="site-header" class="fixed top-0 inset-x-0 z-40 transition-all duration-300 bg-cream/95 backdrop-blur border-b border-bark/10">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between px-5 sm:px-8 py-3" aria-label="Primary">
+    <a href="#hero" class="flex items-center gap-3 group" aria-label="Grand Hotel home">
+      <span class="flex h-11 w-11 items-center justify-center rounded-full border-2 border-terracotta text-terracotta font-serif text-lg font-semibold tracking-wide group-hover:bg-terracotta group-hover:text-cream transition-colors">GH</span>
+      <span class="font-serif text-xl sm:text-2xl font-semibold tracking-wide text-espresso">Grand Hotel</span>
+    </a>
+
+    <ul class="hidden lg:flex items-center gap-8 font-medium text-sm text-bark">
+      <li><a href="#about" class="hover:text-terracotta transition-colors">Our Story</a></li>
+      <li><a href="#rooms" class="hover:text-terracotta transition-colors">Rooms &amp; Suites</a></li>
+      <li><a href="#amenities" class="hover:text-terracotta transition-colors">Amenities</a></li>
+      <li><a href="#gallery" class="hover:text-terracotta transition-colors">Gallery</a></li>
+      <li><a href="#testimonials" class="hover:text-terracotta transition-colors">Reviews</a></li>
+      <li><a href="#location" class="hover:text-terracotta transition-colors">Location</a></li>
+    </ul>
+
+    <div class="flex items-center gap-3">
+      <a href="#booking" class="hidden sm:inline-flex items-center rounded-full bg-terracotta hover:bg-terracotta-dark text-cream text-sm font-semibold px-5 py-2.5 transition-colors shadow-sm">
+        Book Now
+      </a>
+      <button id="menu-toggle" class="lg:hidden flex flex-col justify-center items-center h-11 w-11 rounded-full border border-bark/20 text-espresso" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span class="sr-only">Menu</span>
+        <span id="hamburger-icon" class="block w-5 h-[2px] bg-espresso relative before:content-[''] before:absolute before:w-5 before:h-[2px] before:bg-espresso before:-translate-y-[7px] after:content-[''] after:absolute after:w-5 after:h-[2px] after:bg-espresso after:translate-y-[7px]"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="lg:hidden hidden border-t border-bark/10 bg-cream px-5 pb-6 pt-2">
+    <ul class="flex flex-col gap-1 font-medium text-bark">
+      <li><a href="#about" class="block py-3 hover:text-terracotta transition-colors">Our Story</a></li>
+      <li><a href="#rooms" class="block py-3 hover:text-terracotta transition-colors">Rooms &amp; Suites</a></li>
+      <li><a href="#amenities" class="block py-3 hover:text-terracotta transition-colors">Amenities</a></li>
+      <li><a href="#gallery" class="block py-3 hover:text-terracotta transition-colors">Gallery</a></li>
+      <li><a href="#testimonials" class="block py-3 hover:text-terracotta transition-colors">Reviews</a></li>
+      <li><a href="#location" class="block py-3 hover:text-terracotta transition-colors">Location</a></li>
+      <li class="pt-3"><a href="#booking" class="block text-center rounded-full bg-terracotta text-cream font-semibold px-5 py-3">Book Now</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="main-content">
+
+  <!-- ============ HERO ============ -->
+  <section id="hero" class="relative min-h-screen flex items-end">
+    <div class="absolute inset-0">
+      <img
+        src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80"
+        alt="Grand Hotel's sunlit lobby with warm wood tones and elegant seating"
+        class="w-full h-full object-cover"
+        fetchpriority="high"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-espresso/90 via-espresso/40 to-espresso/20"></div>
+    </div>
+
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 pb-16 pt-40">
+      <p class="fade-in text-gold font-semibold tracking-[0.2em] text-xs sm:text-sm uppercase mb-4">Est. 2010 · Downtown Riverside District</p>
+      <h1 class="fade-in font-serif text-4xl sm:text-6xl lg:text-7xl font-semibold text-cream max-w-3xl leading-[1.05]">
+        A grand welcome, <br class="hidden sm:block" /> every single stay.
+      </h1>
+      <p class="fade-in mt-6 text-cream/90 text-lg sm:text-xl max-w-xl">
+        Boutique comfort, attentive service, and quiet luxury in the heart of the city — Grand Hotel is where your stay becomes the best part of your trip.
+      </p>
+      <div class="fade-in mt-8 flex flex-wrap items-center gap-4">
+        <a href="#booking" class="inline-flex items-center gap-2 rounded-full bg-terracotta hover:bg-terracotta-dark text-cream font-semibold px-7 py-3.5 transition-colors shadow-lg">
+          Check Availability
+        </a>
+        <a href="#rooms" class="inline-flex items-center gap-2 rounded-full border border-cream/40 text-cream hover:bg-cream/10 font-semibold px-7 py-3.5 transition-colors">
+          View Rooms &amp; Suites
+        </a>
+      </div>
+      <div class="fade-in mt-6 flex items-center gap-2 text-cream/85 text-sm">
+        <span class="flex text-gold" aria-hidden="true">★★★★★</span>
+        <span>4.8/5 from 1,240+ verified guests</span>
+      </div>
+    </div>
+
+    <!-- Booking widget -->
+    <div id="booking" class="relative z-10 w-full">
+      <div class="max-w-6xl mx-auto px-5 sm:px-8 -mb-10 sm:-mb-12">
+        <form id="booking-form" class="fade-in bg-cream rounded-2xl shadow-2xl border border-bark/10 p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end" aria-label="Check availability">
+          <div class="flex flex-col gap-1.5">
+            <label for="checkin" class="text-xs font-semibold uppercase tracking-wide text-bark">Check-in</label>
+            <input type="date" id="checkin" name="checkin" required class="rounded-lg border border-bark/20 bg-ivory px-3.5 py-2.5 text-sm text-espresso focus:outline-none focus:ring-2 focus:ring-terracotta" />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label for="checkout" class="text-xs font-semibold uppercase tracking-wide text-bark">Check-out</label>
+            <input type="date" id="checkout" name="checkout" required class="rounded-lg border border-bark/20 bg-ivory px-3.5 py-2.5 text-sm text-espresso focus:outline-none focus:ring-2 focus:ring-terracotta" />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label for="guests" class="text-xs font-semibold uppercase tracking-wide text-bark">Guests</label>
+            <select id="guests" name="guests" class="rounded-lg border border-bark/20 bg-ivory px-3.5 py-2.5 text-sm text-espresso focus:outline-none focus:ring-2 focus:ring-terracotta">
+              <option>1 Guest</option>
+              <option selected>2 Guests</option>
+              <option>3 Guests</option>
+              <option>4+ Guests</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label for="room-type" class="text-xs font-semibold uppercase tracking-wide text-bark">Room Type</label>
+            <select id="room-type" name="room-type" class="rounded-lg border border-bark/20 bg-ivory px-3.5 py-2.5 text-sm text-espresso focus:outline-none focus:ring-2 focus:ring-terracotta">
+              <option>Any</option>
+              <option>Classic King</option>
+              <option>Deluxe Terrace</option>
+              <option>Executive Suite</option>
+              <option>The Penthouse</option>
+            </select>
+          </div>
+          <button type="submit" class="rounded-lg bg-terracotta hover:bg-terracotta-dark text-cream font-semibold px-5 py-3 text-sm transition-colors w-full">
+            Check Availability
+          </button>
+        </form>
+        <p id="booking-feedback" class="fade-in mt-3 text-sm text-bark/80 text-center" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TRUST BAR ============ -->
+  <section class="bg-espresso text-cream pt-20 sm:pt-24 pb-12">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+      <div class="fade-in flex flex-col items-center gap-3">
+        <svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+        <p class="font-semibold text-sm">Free Cancellation</p>
+        <p class="text-xs text-cream/70">Up to 48 hours before arrival</p>
+      </div>
+      <div class="fade-in flex flex-col items-center gap-3">
+        <svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.752a1.125 1.125 0 0 0-1.006 0L3.622 6.19A1.125 1.125 0 0 0 3 7.196v13.303c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"/></svg>
+        <p class="font-semibold text-sm">Best Price Guarantee</p>
+        <p class="text-xs text-cream/70">Book direct and save</p>
+      </div>
+      <div class="fade-in flex flex-col items-center gap-3">
+        <svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+        <p class="font-semibold text-sm">24/7 Front Desk</p>
+        <p class="text-xs text-cream/70">Always here to help</p>
+      </div>
+      <div class="fade-in flex flex-col items-center gap-3">
+        <svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12 20.25h.008v.008H12v-.008Z"/></svg>
+        <p class="font-semibold text-sm">Complimentary WiFi</p>
+        <p class="text-xs text-cream/70">High-speed, throughout</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about" class="py-20 sm:py-28 bg-cream">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <div class="fade-in order-2 lg:order-1">
+        <p class="text-terracotta font-semibold tracking-[0.2em] text-xs uppercase mb-4">Our Story</p>
+        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight mb-6">Fifteen years of making strangers feel like regulars.</h2>
+        <p class="text-bark text-base sm:text-lg leading-relaxed mb-5">
+          Grand Hotel opened in 2010 in a beautifully restored early-1900s trading house, three blocks from the river. We kept the original brickwork and timber beams, and built a hotel around them that feels less like a chain and more like a well-loved home — one with excellent linens.
+        </p>
+        <p class="text-bark text-base sm:text-lg leading-relaxed mb-8">
+          Every room is designed by our in-house team, every breakfast pastry is baked before sunrise, and every member of our staff is trained to remember your name by the second morning. We're independently owned, deeply local, and quietly obsessed with getting the details right.
+        </p>
+        <div class="grid grid-cols-3 gap-6 border-t border-bark/15 pt-8">
+          <div>
+            <p class="font-serif text-3xl font-semibold text-terracotta">15</p>
+            <p class="text-xs text-bark uppercase tracking-wide mt-1">Years Open</p>
+          </div>
+          <div>
+            <p class="font-serif text-3xl font-semibold text-terracotta">64</p>
+            <p class="text-xs text-bark uppercase tracking-wide mt-1">Rooms &amp; Suites</p>
+          </div>
+          <div>
+            <p class="font-serif text-3xl font-semibold text-terracotta">4.8★</p>
+            <p class="text-xs text-bark uppercase tracking-wide mt-1">Average Rating</p>
+          </div>
+        </div>
+      </div>
+      <div class="fade-in order-1 lg:order-2">
+        <img
+          src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=1000&q=80"
+          alt="Warm, wood-paneled lounge area in the Grand Hotel lobby with soft seating"
+          loading="lazy"
+          class="rounded-2xl shadow-xl w-full h-[420px] sm:h-[520px] object-cover"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ROOMS & SUITES ============ -->
+  <section id="rooms" class="py-20 sm:py-28 bg-ivory">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="fade-in text-center max-w-2xl mx-auto mb-14">
+        <p class="text-terracotta font-semibold tracking-[0.2em] text-xs uppercase mb-4">Rooms &amp; Suites</p>
+        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight">Find your kind of quiet.</h2>
+        <p class="text-bark text-base sm:text-lg mt-4">From cozy king rooms to a full-floor penthouse — each is designed for genuine rest.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7">
+
+        <!-- Room 1 -->
+        <article class="fade-in bg-cream rounded-2xl overflow-hidden shadow-sm border border-bark/10 flex flex-col">
+          <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=700&q=80" alt="Classic King room with warm linens and a reading nook" loading="lazy" class="h-56 w-full object-cover" />
+          <div class="p-6 flex flex-col flex-1">
+            <h3 class="font-serif text-xl font-semibold mb-1">Classic King</h3>
+            <p class="text-sm text-bark mb-4 flex-1">A serene retreat with a plush king bed, warm oak floors, and a reading nook bathed in morning light.</p>
+            <ul class="text-xs text-bark/80 space-y-1 mb-5">
+              <li>· 320 sq ft · City view</li>
+              <li>· Rainfall shower</li>
+              <li>· Nespresso bar</li>
+            </ul>
+            <div class="flex items-center justify-between mt-auto">
+              <div>
+                <p class="text-xs text-bark/70">From</p>
+                <p class="font-serif text-xl font-semibold text-espresso">$189<span class="text-sm font-sans font-normal text-bark">/night</span></p>
+              </div>
+              <a href="#booking" class="rounded-full bg-terracotta hover:bg-terracotta-dark text-cream text-sm font-semibold px-5 py-2.5 transition-colors">Reserve</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Room 2 -->
+        <article class="fade-in bg-cream rounded-2xl overflow-hidden shadow-sm border border-bark/10 flex flex-col">
+          <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=700&q=80" alt="Deluxe Terrace room with private balcony seating" loading="lazy" class="h-56 w-full object-cover" />
+          <div class="p-6 flex flex-col flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-serif text-xl font-semibold">Deluxe Terrace</h3>
+              <span class="text-[10px] font-semibold uppercase tracking-wide bg-terracotta/10 text-terracotta-dark px-2 py-0.5 rounded-full">Popular</span>
+            </div>
+            <p class="text-sm text-bark mb-4 flex-1">Our most requested room — a private terrace overlooking the courtyard garden, perfect with a morning coffee.</p>
+            <ul class="text-xs text-bark/80 space-y-1 mb-5">
+              <li>· 380 sq ft · Garden view</li>
+              <li>· Private terrace</li>
+              <li>· Soaking tub</li>
+            </ul>
+            <div class="flex items-center justify-between mt-auto">
+              <div>
+                <p class="text-xs text-bark/70">From</p>
+                <p class="font-serif text-xl font-semibold text-espresso">$239<span class="text-sm font-sans font-normal text-bark">/night</span></p>
+              </div>
+              <a href="#booking" class="rounded-full bg-terracotta hover:bg-terracotta-dark text-cream text-sm font-semibold px-5 py-2.5 transition-colors">Reserve</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Room 3 -->
+        <article class="fade-in bg-cream rounded-2xl overflow-hidden shadow-sm border border-bark/10 flex flex-col">
+          <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=700&q=80" alt="Executive Suite living area with separate lounge space" loading="lazy" class="h-56 w-full object-cover" />
+          <div class="p-6 flex flex-col flex-1">
+            <h3 class="font-serif text-xl font-semibold mb-1">Executive Suite</h3>
+            <p class="text-sm text-bark mb-4 flex-1">A separate living area and workspace make this the choice for longer stays and quiet business trips.</p>
+            <ul class="text-xs text-bark/80 space-y-1 mb-5">
+              <li>· 540 sq ft · River view</li>
+              <li>· Separate lounge</li>
+              <li>· Complimentary minibar</li>
+            </ul>
+            <div class="flex items-center justify-between mt-auto">
+              <div>
+                <p class="text-xs text-bark/70">From</p>
+                <p class="font-serif text-xl font-semibold text-espresso">$329<span class="text-sm font-sans font-normal text-bark">/night</span></p>
+              </div>
+              <a href="#booking" class="rounded-full bg-terracotta hover:bg-terracotta-dark text-cream text-sm font-semibold px-5 py-2.5 transition-colors">Reserve</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Room 4 -->
+        <article class="fade-in bg-cream rounded-2xl overflow-hidden shadow-sm border border-bark/10 flex flex-col">
+          <img src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=700&q=80" alt="The Penthouse suite with panoramic skyline windows" loading="lazy" class="h-56 w-full object-cover" />
+          <div class="p-6 flex flex-col flex-1">
+            <h3 class="font-serif text-xl font-semibold mb-1">The Penthouse</h3>
+            <p class="text-sm text-bark mb-4 flex-1">The whole top floor: panoramic skyline windows, a private dining table, and a butler on call.</p>
+            <ul class="text-xs text-bark/80 space-y-1 mb-5">
+              <li>· 900 sq ft · Skyline view</li>
+              <li>· Private dining table</li>
+              <li>· 24/7 butler service</li>
+            </ul>
+            <div class="flex items-center justify-between mt-auto">
+              <div>
+                <p class="text-xs text-bark/70">From</p>
+                <p class="font-serif text-xl font-semibold text-espresso">$549<span class="text-sm font-sans font-normal text-bark">/night</span></p>
+              </div>
+              <a href="#booking" class="rounded-full bg-terracotta hover:bg-terracotta-dark text-cream text-sm font-semibold px-5 py-2.5 transition-colors">Reserve</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+      <p class="fade-in text-center text-sm text-bark/80 mt-8">Only <span class="font-semibold text-terracotta-dark">3 Deluxe Terrace rooms</span> left at this week's rate.</p>
+    </div>
+  </section>
+
+  <!-- ============ AMENITIES ============ -->
+  <section id="amenities" class="py-20 sm:py-28 bg-cream">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="fade-in text-center max-w-2xl mx-auto mb-14">
+        <p class="text-terracotta font-semibold tracking-[0.2em] text-xs uppercase mb-4">Amenities</p>
+        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight">Everything you need, nothing you don't.</h2>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
+          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H17.25a4.5 4.5 0 1 0-.108-8.995 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z"/></svg>
+          <p class="font-semibold text-sm">Rooftop Pool</p>
+        </div>
+        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
+          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>
+          <p class="font-semibold text-sm">Full-Service Spa</p>
+        </div>
+        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
+          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 3.75c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>
+          <p class="font-semibold text-sm">24-Hour Gym</p>
+        </div>
+        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
+          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12"/></svg>
+          <p class="font-semibold text-sm">Rooftop Restaurant</p>
+        </div>
+        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
+          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z"/></svg>
+          <p class="font-semibold text-sm">Valet Parking</p>
+        </div>
+        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
+          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0v-.443c0-.055.014-.109.04-.157l2.418-4.435a2.25 2.25 0 0 1 1.972-1.164H16.82a2.25 2.25 0 0 1 1.972 1.164l2.418 4.435c.026.048.04.102.04.157v.443"/></svg>
+          <p class="font-semibold text-sm">Business Center</p>
+        </div>
+        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
+          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
+          <p class="font-semibold text-sm">Turndown Service</p>
+        </div>
+        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
+          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21M6.75 6.75h10.5v10.5H6.75V6.75Z"/></svg>
+          <p class="font-semibold text-sm">Pet Friendly</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GALLERY ============ -->
+  <section id="gallery" class="py-20 sm:py-28 bg-espresso text-cream">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="fade-in text-center max-w-2xl mx-auto mb-14">
+        <p class="text-terracotta font-semibold tracking-[0.2em] text-xs uppercase mb-4">Gallery</p>
+        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight">A closer look around.</h2>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 auto-rows-[160px] sm:auto-rows-[200px]" id="gallery-grid">
+        <button class="fade-in gallery-item relative overflow-hidden rounded-xl row-span-2 col-span-1" data-full="https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=1400&q=80" data-caption="Grand Hotel exterior at golden hour">
+          <img src="https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Grand Hotel exterior at golden hour" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+        </button>
+        <button class="fade-in gallery-item relative overflow-hidden rounded-xl" data-full="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1400&q=80" data-caption="Classic King room detail">
+          <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Classic King room detail" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+        </button>
+        <button class="fade-in gallery-item relative overflow-hidden rounded-xl" data-full="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1400&q=80" data-caption="Rooftop restaurant seating at dusk">
+          <img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Rooftop restaurant seating at dusk" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+        </button>
+        <button class="fade-in gallery-item relative overflow-hidden rounded-xl row-span-2" data-full="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1400&q=80" data-caption="Rooftop pool overlooking the skyline">
+          <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Rooftop pool overlooking the skyline" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+        </button>
+        <button class="fade-in gallery-item relative overflow-hidden rounded-xl" data-full="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1400&q=80" data-caption="The hotel bar, evening service">
+          <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="The hotel bar, evening service" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+        </button>
+        <button class="fade-in gallery-item relative overflow-hidden rounded-xl" data-full="https://images.unsplash.com/photo-1611048268330-53de574cae3b?auto=format&fit=crop&w=1400&q=80" data-caption="Spa treatment room">
+          <img src="https://images.unsplash.com/photo-1611048268330-53de574cae3b?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Spa treatment room" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+        </button>
+        <button class="fade-in gallery-item relative overflow-hidden rounded-xl" data-full="https://images.unsplash.com/photo-1519821172141-b5d8342665e6?auto=format&fit=crop&w=1400&q=80" data-caption="Deluxe Terrace bed and linens">
+          <img src="https://images.unsplash.com/photo-1519821172141-b5d8342665e6?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Deluxe Terrace bed and linens" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+        </button>
+        <button class="fade-in gallery-item relative overflow-hidden rounded-xl" data-full="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=1400&q=80" data-caption="Guests enjoying dinner service">
+          <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Guests enjoying dinner service" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center bg-espresso/95 px-4" role="dialog" aria-modal="true" aria-label="Image viewer">
+      <button id="lightbox-close" class="absolute top-5 right-5 sm:top-8 sm:right-8 text-cream/80 hover:text-cream text-3xl leading-none" aria-label="Close image viewer">&times;</button>
+      <button id="lightbox-prev" class="absolute left-3 sm:left-8 text-cream/80 hover:text-cream text-4xl leading-none" aria-label="Previous image">&#8249;</button>
+      <button id="lightbox-next" class="absolute right-3 sm:right-8 text-cream/80 hover:text-cream text-4xl leading-none" aria-label="Next image">&#8250;</button>
+      <figure class="max-w-4xl w-full">
+        <img id="lightbox-img" src="" alt="" class="w-full max-h-[80vh] object-contain rounded-lg" />
+        <figcaption id="lightbox-caption" class="text-center text-cream/80 text-sm mt-4"></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section id="testimonials" class="py-20 sm:py-28 bg-cream">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="fade-in text-center max-w-2xl mx-auto mb-14">
+        <p class="text-terracotta font-semibold tracking-[0.2em] text-xs uppercase mb-4">Guest Reviews</p>
+        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight">Don't just take our word for it.</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <blockquote class="fade-in bg-ivory rounded-2xl p-7 border border-bark/10">
+          <div class="flex text-gold mb-4" aria-label="5 out of 5 stars">★★★★★</div>
+          <p class="text-bark leading-relaxed mb-6">"The Deluxe Terrace room was worth every penny — waking up to coffee on our own balcony overlooking the courtyard was the highlight of our trip."</p>
+          <footer class="flex items-center gap-3">
+            <span class="flex h-10 w-10 rounded-full bg-terracotta/15 text-terracotta-dark font-serif font-semibold items-center justify-center">MR</span>
+            <div class="text-sm">
+              <p class="font-semibold text-espresso">Maria R.</p>
+              <p class="text-bark/70">Verified Guest, Stayed August 2026</p>
+            </div>
+          </footer>
+        </blockquote>
+        <blockquote class="fade-in bg-ivory rounded-2xl p-7 border border-bark/10">
+          <div class="flex text-gold mb-4" aria-label="5 out of 5 stars">★★★★★</div>
+          <p class="text-bark leading-relaxed mb-6">"Staff remembered my name from check-in through checkout. Rooftop restaurant is genuinely excellent, not just 'good for a hotel.' Will be back."</p>
+          <footer class="flex items-center gap-3">
+            <span class="flex h-10 w-10 rounded-full bg-terracotta/15 text-terracotta-dark font-serif font-semibold items-center justify-center">DK</span>
+            <div class="text-sm">
+              <p class="font-semibold text-espresso">David K.</p>
+              <p class="text-bark/70">Verified Guest, Stayed July 2026</p>
+            </div>
+          </footer>
+        </blockquote>
+        <blockquote class="fade-in bg-ivory rounded-2xl p-7 border border-bark/10">
+          <div class="flex text-gold mb-4" aria-label="4 out of 5 stars">★★★★☆</div>
+          <p class="text-bark leading-relaxed mb-6">"Booked the Executive Suite for a work trip — the separate lounge made video calls so much easier. Spa was a great way to unwind after."</p>
+          <footer class="flex items-center gap-3">
+            <span class="flex h-10 w-10 rounded-full bg-terracotta/15 text-terracotta-dark font-serif font-semibold items-center justify-center">AT</span>
+            <div class="text-sm">
+              <p class="font-semibold text-espresso">Aisha T.</p>
+              <p class="text-bark/70">Verified Guest, Stayed June 2026</p>
+            </div>
+          </footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LOCATION ============ -->
+  <section id="location" class="py-20 sm:py-28 bg-ivory">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-12 items-center">
+      <div class="fade-in">
+        <p class="text-terracotta font-semibold tracking-[0.2em] text-xs uppercase mb-4">Location</p>
+        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight mb-6">Steps from everything worth seeing.</h2>
+        <p class="text-bark text-base sm:text-lg leading-relaxed mb-6">
+          Grand Hotel sits on the corner of River Street and 5th Avenue, in the heart of the Riverside District — a five-minute walk from the museum quarter, riverside promenade, and the city's best-reviewed restaurants.
+        </p>
+        <ul class="space-y-3 text-bark">
+          <li class="flex items-start gap-3"><span class="text-terracotta mt-1">•</span><span><strong class="text-espresso">River Promenade</strong> — 4 min walk</span></li>
+          <li class="flex items-start gap-3"><span class="text-terracotta mt-1">•</span><span><strong class="text-espresso">City Art Museum</strong> — 7 min walk</span></li>
+          <li class="flex items-start gap-3"><span class="text-terracotta mt-1">•</span><span><strong class="text-espresso">Central Station</strong> — 10 min walk</span></li>
+          <li class="flex items-start gap-3"><span class="text-terracotta mt-1">•</span><span><strong class="text-espresso">International Airport</strong> — 25 min by car</span></li>
+        </ul>
+      </div>
+      <div class="fade-in rounded-2xl overflow-hidden shadow-xl border border-bark/10 h-[380px] sm:h-[460px]">
+        <iframe
+          title="Grand Hotel location map"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=-74.012%2C40.700%2C-73.990%2C40.715&layer=mapnik&marker=40.7075%2C-74.001"
+          class="w-full h-full border-0"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          aria-label="Map showing Grand Hotel location">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="relative py-24 sm:py-32">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1920&q=80" alt="Grand Hotel facade illuminated at night" loading="lazy" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-espresso/80"></div>
+    </div>
+    <div class="fade-in relative z-10 max-w-3xl mx-auto px-5 sm:px-8 text-center">
+      <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-cream leading-tight mb-6">Your room is waiting. Let's make it official.</h2>
+      <p class="text-cream/85 text-lg mb-8">Best rates are always here, direct — plus free cancellation up to 48 hours before arrival.</p>
+      <a href="#booking" class="inline-flex items-center gap-2 rounded-full bg-terracotta hover:bg-terracotta-dark text-cream font-semibold px-8 py-4 text-lg transition-colors shadow-lg">
+        Book Your Stay
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-espresso text-cream/80">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 py-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+    <div>
+      <div class="flex items-center gap-3 mb-4">
+        <span class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-terracotta text-terracotta font-serif text-base font-semibold">GH</span>
+        <span class="font-serif text-xl font-semibold text-cream">Grand Hotel</span>
+      </div>
+      <p class="text-sm leading-relaxed mb-5">Boutique comfort and warm, attentive service in the heart of the Riverside District.</p>
+      <div class="flex items-center gap-3">
+        <a href="#" aria-label="Grand Hotel on Instagram" class="h-9 w-9 flex items-center justify-center rounded-full border border-cream/20 hover:border-terracotta hover:text-terracotta transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069ZM12 0C8.741 0 8.332.014 7.052.072 2.695.272.273 2.69.073 7.052.014 8.332 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.332 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.668-.072-4.948-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0Zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881Z"/></svg>
+        </a>
+        <a href="#" aria-label="Grand Hotel on Facebook" class="h-9 w-9 flex items-center justify-center rounded-full border border-cream/20 hover:border-terracotta hover:text-terracotta transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12.06C22 6.505 17.523 2 12 2S2 6.505 2 12.06c0 5.02 3.657 9.184 8.438 9.94v-7.03H7.898v-2.91h2.54V9.845c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562v1.877h2.773l-.443 2.91h-2.33V22c4.78-.756 8.437-4.92 8.437-9.94Z"/></svg>
+        </a>
+        <a href="#" aria-label="Grand Hotel on X" class="h-9 w-9 flex items-center justify-center rounded-full border border-cream/20 hover:border-terracotta hover:text-terracotta transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231ZM17.083 19.77h1.833L7.084 4.126H5.117Z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="font-serif text-base font-semibold text-cream mb-4">Contact</h3>
+      <ul class="space-y-2 text-sm">
+        <li>128 River Street, Suite 100</li>
+        <li>Riverside District, NY 10001</li>
+        <li><a href="tel:+18005550142" class="hover:text-terracotta transition-colors">+1 (800) 555-0142</a></li>
+        <li><a href="mailto:stay@grandhotel.example" class="hover:text-terracotta transition-colors">stay@grandhotel.example</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="font-serif text-base font-semibold text-cream mb-4">Quick Links</h3>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#rooms" class="hover:text-terracotta transition-colors">Rooms &amp; Suites</a></li>
+        <li><a href="#amenities" class="hover:text-terracotta transition-colors">Amenities</a></li>
+        <li><a href="#gallery" class="hover:text-terracotta transition-colors">Gallery</a></li>
+        <li><a href="#location" class="hover:text-terracotta transition-colors">Location</a></li>
+        <li><a href="#booking" class="hover:text-terracotta transition-colors">Book Now</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="font-serif text-base font-semibold text-cream mb-4">Stay in the loop</h3>
+      <p class="text-sm mb-4">Seasonal offers and local guides, once a month, no spam.</p>
+      <form id="newsletter-form" class="flex flex-col gap-2" aria-label="Newsletter signup">
+        <label for="newsletter-email" class="sr-only">Email address</label>
+        <input type="email" id="newsletter-email" required placeholder="you@example.com" class="rounded-lg bg-cream/10 border border-cream/20 px-3.5 py-2.5 text-sm text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-terracotta" />
+        <button type="submit" class="rounded-lg bg-terracotta hover:bg-terracotta-dark text-cream text-sm font-semibold px-4 py-2.5 transition-colors">Subscribe</button>
+      </form>
+      <p id="newsletter-feedback" class="text-xs text-terracotta mt-2" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="border-t border-cream/10">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-cream/60">
+      <p>&copy; <span id="year"></span> Grand Hotel. All rights reserved.</p>
+      <p>Designed with care for the modern traveler.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
