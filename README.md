@@ -3,6 +3,7 @@
 A boutique upscale hotel website — single-page, responsive, and ready to deploy with zero build step.
 
 🔗 Repository: https://github.com/Mohammed276-wq/Grand-hotel-Restaurant-web
+🧪 Live testing link: https://mohammed276-wq.github.io/Grand-hotel-Restaurant-web/ (GitHub Pages — enable under Settings → Pages → Deploy from branch → `main` / root)
 
 ## Stack
 
