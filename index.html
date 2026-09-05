@@ -22,568 +22,1180 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- Tailwind CDN -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          cream: '#FBF4E9',
-          ivory: '#F6ECDC',
-          espresso: '#2B221C',
-          bark: '#4A3B2E',
-          terracotta: '#C1712D',
-          'terracotta-dark': '#A65A22',
-          gold: '#C9A16A',
-        },
-        fontFamily: {
-          serif: ['"Playfair Display"', 'Georgia', 'serif'],
-          sans: ['"Inter"', 'system-ui', 'sans-serif'],
-        },
-      },
-    },
-  };
+<script type="importmap">
+{ "imports": { "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.1.18/+esm" } }
 </script>
 
-<link rel="stylesheet" href="css/style.css" />
+<style>
+  /* ===================== Design tokens ===================== */
+  :root{
+    --background:#ffffff;
+    --foreground:#2b221c;
+    --brand:#c1712d;
+    --brand-dark:#a65a22;
+    --brand-deep:#2b221c;
+    --brand-light:#c9a16a;
+    --surface:#f6ecdc;
+    --surface-card:#fbf4e9;
+    --ink:#2b221c;
+    --ink-soft:#6b5a49;
+    --ghost:#e7d8c3;
+    --hairline:#e4d6c2;
+    --on-brand:#ffffff;
+    --radius-card:1.5rem;
+    --radius-card-lg:2rem;
+    --radius-pill:62.5rem;
+    --font-serif:"Playfair Display", Georgia, serif;
+    --font-sans:"Inter", system-ui, sans-serif;
+  }
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  img{display:block;max-width:100%;}
+  button{font:inherit;cursor:pointer;background:none;border:none;color:inherit;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  html{font-size:16px;}
+  @media (max-width:1920px){ html{ font-size:0.833333vw; } }
+  @media (max-width:1440px){ html{ font-size:1.111111vw; } }
+  @media (max-width:1024px){ html{ font-size:1.5625vw; } }
+  @media (max-width:640px){ html{ font-size:4.444444vw; } }
+  html.lenis, html.lenis body{ height:auto; }
+  html.scroll-locked{ position:relative; overflow:hidden; height:100%; }
+  body{
+    min-height:100vh;
+    background:var(--background);
+    color:var(--foreground);
+    font-family:var(--font-sans);
+    overflow-x:clip;
+  }
+  :focus-visible{ outline:2px solid var(--brand-light); outline-offset:2px; }
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+  .skip-link{position:absolute;top:-3rem;left:0.75rem;z-index:300;background:var(--brand-deep);color:#fff;padding:0.6rem 1rem;border-radius:0.5rem;transition:top .2s;}
+  .skip-link:focus{top:0.75rem;}
+
+  main{width:100%;overflow-x:clip;padding:0.5rem;}
+  @media (min-width:640px){ main{padding:0.75rem;} }
+
+  section{position:relative;}
+  .container{max-width:88rem;margin:0 auto;}
+
+  /* ===================== Reveal primitives ===================== */
+  .clip{overflow:hidden;display:block;padding-bottom:0.14em;}
+  .clip > span{display:inline-block;transform:translateY(115%);opacity:0;transition:transform 1.05s cubic-bezier(.16,1,.3,1), opacity 1.05s cubic-bezier(.16,1,.3,1);}
+  .clip.in > span{transform:translateY(0);opacity:1;}
+  .word-fade{opacity:0;transform:translateY(18px);transition:transform .7s cubic-bezier(.25,1,.5,1), opacity .7s cubic-bezier(.25,1,.5,1);}
+  .word-fade.in{opacity:1;transform:translateY(0);}
+  .rise{opacity:0;transform:translateY(28px);transition:transform .8s cubic-bezier(.16,1,.3,1), opacity .8s cubic-bezier(.16,1,.3,1);}
+  .rise.in{opacity:1;transform:translateY(0);}
+  .rise-lg{opacity:0;transform:translateY(48px);transition:transform .9s cubic-bezier(.16,1,.3,1), opacity .9s cubic-bezier(.16,1,.3,1);}
+  .rise-lg.in{opacity:1;transform:translateY(0);}
+  .scale-in{opacity:0;transform:scale(0.9);transition:transform .8s cubic-bezier(.16,1,.3,1), opacity .8s cubic-bezier(.16,1,.3,1);}
+  .scale-in.in{opacity:1;transform:scale(1);}
+
+  /* ===================== Loader ===================== */
+  #loader{position:fixed;inset:0;z-index:200;background:var(--brand-deep);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;transition:transform 0.85s cubic-bezier(.65,0,.35,1);}
+  #loader.exit{transform:translateY(-105%);}
+  .loader-mark{display:flex;align-items:center;gap:0.6rem;opacity:0;transform:translateY(16px);transition:opacity .5s ease, transform .5s ease;}
+  .loader-mark.in{opacity:1;transform:translateY(0);}
+  .loader-mark span{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;text-transform:uppercase;letter-spacing:0.2em;}
+  .loader-track{width:10rem;height:1px;border-radius:var(--radius-pill);background:rgba(255,255,255,0.2);overflow:hidden;}
+  .loader-fill{width:100%;height:100%;background:#fff;transform:scaleX(0);transform-origin:left;transition:transform 1.28s cubic-bezier(.65,0,.35,1);}
+
+  /* ===================== Header ===================== */
+  header.site-header{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:1.5rem 1.5rem 0;gap:1rem;}
+  @media (min-width:640px){ header.site-header{padding:2rem 2.5rem 0;} }
+  .nav-left,.nav-right{display:flex;align-items:center;gap:2rem;font-size:0.75rem;color:rgba(255,255,255,0.9);}
+  .nav-left{display:none;}
+  @media (min-width:1024px){ .nav-left{display:flex;flex:1;} }
+  .nav-left a{transition:color .2s;}
+  .nav-left a:hover{color:#fff;}
+  .brand-center{display:flex;justify-content:flex-start;align-items:center;gap:0.4rem;font-family:var(--font-serif);font-weight:600;text-transform:uppercase;letter-spacing:0.1em;font-size:0.8rem;color:#fff;flex-shrink:0;}
+  @media (min-width:640px){ .brand-center{letter-spacing:0.2em;font-size:1rem;gap:0.5rem;} }
+  @media (min-width:1024px){ .brand-center{flex:1;justify-content:center;} }
+  .brand-mark{width:1.4rem;height:1.4rem;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:0.6rem;letter-spacing:0;flex-shrink:0;}
+  @media (min-width:640px){ .brand-mark{width:1.6rem;height:1.6rem;font-size:0.65rem;} }
+  .nav-right{justify-content:flex-end;gap:0.75rem;flex-shrink:0;}
+  @media (min-width:640px){ .nav-right{gap:1.25rem;} }
+  @media (min-width:1024px){ .nav-right{flex:1;} }
+  .book-link{display:none;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.15em;color:#fff;}
+  @media (min-width:640px){ .book-link{display:inline;} }
+  .book-link:hover{text-decoration:underline;}
+  .burger{width:2.5rem;height:2.5rem;border-radius:var(--radius-pill);background:rgba(255,255,255,0.15);backdrop-filter:blur(6px);display:grid;place-items:center;transition:background .2s;}
+  .burger:hover{background:rgba(255,255,255,0.25);}
+  .burger .bars{display:flex;flex-direction:column;gap:5px;}
+  .burger .bars span{width:1rem;height:1px;background:#fff;display:block;}
+
+  /* ===================== Hero ===================== */
+  #hero{background:var(--brand-deep);color:#fff;position:relative;overflow:hidden;isolation:isolate;border-radius:var(--radius-card-lg);min-height:36rem;height:calc(100svh - 1rem);display:flex;flex-direction:column;}
+  @media (min-width:640px){ #hero{height:calc(100svh - 1.5rem);} }
+  .hero-bg{position:absolute;inset:0;z-index:-10;overflow:hidden;}
+  .hero-bg-inner{position:absolute;left:0;right:0;top:-16%;height:132%;width:100%;will-change:transform;}
+  .hero-bg-inner img{width:100%;height:100%;object-fit:cover;}
+  .hero-gradient{position:absolute;inset:0;background:linear-gradient(to bottom, rgba(43,34,28,0.68), rgba(43,34,28,0.38), rgba(43,34,28,0.78));}
+  .hero-title-wrap{padding:4.5rem 1.25rem 0;overflow:hidden;}
+  @media (min-width:640px){ .hero-title-wrap{padding:6rem 2.5rem 0;} }
+  #hero-title{font-family:var(--font-serif);font-size:clamp(2.4rem, 11.5vw, 8rem);font-weight:600;text-transform:uppercase;line-height:0.92;letter-spacing:-0.01em;white-space:normal;overflow-wrap:break-word;}
+  @media (min-width:900px){ #hero-title{white-space:nowrap;} }
+  .hero-bottom{margin-top:auto;padding:0 1.25rem 1.5rem;display:flex;flex-direction:column;gap:1.25rem;}
+  @media (min-width:640px){ .hero-bottom{padding:0 2.5rem 2.5rem;flex-direction:row;justify-content:space-between;align-items:flex-end;gap:1.5rem;} }
+  .hero-tagline{font-family:var(--font-serif);font-size:clamp(1.5rem, 6vw, 2.2rem);font-weight:600;text-transform:uppercase;line-height:0.95;letter-spacing:-0.01em;color:rgba(255,255,255,0.88);}
+  .hero-right{display:flex;align-items:flex-end;gap:1rem;flex-wrap:wrap;}
+
+  .glass-card{border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);box-shadow:0 12px 30px rgba(43,34,28,0.25);border-radius:var(--radius-card);}
+
+  .collection-slider{display:none;width:16rem;flex-direction:column;gap:0.75rem;}
+  @media (min-width:768px){ .collection-slider{display:flex;} }
+  .collection-card{display:flex;gap:0.75rem;padding:0.75rem;align-items:center;transition:opacity .4s ease, transform .4s ease;}
+  .collection-card img{width:3.5rem;height:3.5rem;border-radius:0.75rem;object-fit:cover;flex-shrink:0;}
+  .collection-brand{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;}
+  .collection-title{font-size:0.7rem;text-transform:uppercase;opacity:0.8;margin-top:2px;}
+  .collection-cta{font-size:0.65rem;text-decoration:underline;opacity:0.9;display:inline-block;margin-top:0.35rem;}
+
+  .dots{display:flex;gap:0.5rem;justify-content:center;margin-top:0.5rem;}
+  .dots button{padding:0.625rem;margin:-0.25rem;}
+  .dots button span{display:block;height:0.375rem;border-radius:var(--radius-pill);width:0.375rem;background:var(--ghost);transition:width .3s ease, background .3s ease;}
+  .dots.light button span{background:rgba(255,255,255,0.4);}
+  .dots button[aria-current="true"] span{width:1.25rem;background:var(--ink);}
+  .dots.light button[aria-current="true"] span{background:#fff;}
+
+  .membership-card{width:100%;max-width:20rem;padding:0.75rem;display:flex;gap:0.75rem;align-items:stretch;}
+  @media (min-width:640px){ .membership-card{max-width:15rem;} }
+  .membership-left{display:flex;flex-direction:column;justify-content:space-between;}
+  .membership-value{font-size:1.9rem;font-family:var(--font-serif);font-weight:600;line-height:1;}
+  .avatar-row{display:flex;}
+  .avatar-row span{width:1.25rem;height:1.25rem;border-radius:50%;border:1px solid rgba(43,34,28,0.4);margin-left:-0.5rem;}
+  .avatar-row span:first-child{margin-left:0;}
+  .membership-caption{font-size:0.65rem;opacity:0.8;}
+  .membership-img{width:4rem;aspect-ratio:3/4;border-radius:0.75rem;object-fit:cover;}
+
+  /* ===================== Shared components ===================== */
+  .eyebrow{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.22em;}
+  .eyebrow::before{content:"";width:0.375rem;height:0.375rem;border-radius:50%;}
+  .eyebrow.dark{color:var(--ink-soft);}
+  .eyebrow.dark::before{background:var(--brand);}
+  .eyebrow.light{color:rgba(255,255,255,0.7);}
+  .eyebrow.light::before{background:var(--brand-light);}
+
+  .pill-btn{display:inline-flex;align-items:center;gap:0.5rem;border-radius:var(--radius-pill);padding:0.9rem 1.75rem;font-size:0.875rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;transition:background .25s ease,color .25s ease;}
+  .pill-btn.light{background:#fff;color:var(--brand-deep);}
+  .pill-btn.light:hover{background:var(--brand-light);color:#fff;}
+  .pill-btn.solid{background:var(--ink);color:#fff;}
+  .pill-btn.solid:hover{background:var(--brand-deep);}
+  .pill-btn svg{width:1rem;height:1rem;transition:transform .25s ease;}
+  .pill-btn:hover svg{transform:translateX(5px);}
+
+  .arrow-btn{width:3rem;height:3rem;border-radius:50%;display:grid;place-items:center;transition:border-color .2s,background .2s,color .2s;}
+  @media (min-width:640px){ .arrow-btn{width:3.5rem;height:3.5rem;} }
+  .arrow-btn.outline{border:1px solid var(--hairline);color:var(--ink);}
+  .arrow-btn.outline:hover{border-color:var(--ink);}
+  .arrow-btn.solid{background:var(--ink);border:1px solid var(--ink);color:#fff;}
+  .arrow-btn.solid:hover{background:var(--brand-deep);}
+  .arrow-btn svg{width:1.25rem;height:1.25rem;transition:transform .2s ease;}
+  .arrow-btn:hover svg{transform:scale(1.15);}
+  .arrow-btn.prev svg{transform:scaleX(-1);}
+  .arrow-btn.prev:hover svg{transform:scaleX(-1) scale(1.15);}
+
+  /* ===================== Trust section ===================== */
+  #trust{background:var(--background);padding:4rem 1.5rem;overflow:hidden;}
+  @media (min-width:640px){ #trust{padding:5rem 2.5rem;} }
+  .trust-top{display:flex;flex-direction:column;gap:1.5rem;align-items:center;position:relative;z-index:20;}
+  @media (min-width:640px){ .trust-top{flex-direction:row;justify-content:space-between;align-items:flex-start;} }
+  .percent-badge{width:7rem;height:7rem;border-radius:50%;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0.35rem;flex-shrink:0;}
+  @media (min-width:640px){ .percent-badge{width:8rem;height:8rem;} }
+  .percent-badge strong{font-size:1.6rem;font-family:var(--font-serif);}
+  .percent-badge p{font-size:0.6rem;color:var(--ink-soft);max-width:7em;}
+  .badge-card{max-width:28rem;display:flex;gap:1.25rem;border-radius:var(--radius-card);background:var(--surface);padding:1.5rem;align-items:flex-start;}
+  .badge-chip{background:var(--background);border-radius:0.75rem;padding:0.5rem 1rem;font-size:1.25rem;font-weight:600;font-family:var(--font-serif);flex-shrink:0;}
+  .badge-card h3{font-size:1.125rem;font-weight:600;font-family:var(--font-serif);}
+  .badge-card p{font-size:0.75rem;color:var(--ink-soft);margin-top:0.5rem;line-height:1.6;}
+
+  .ghost-heading{pointer-events:none;user-select:none;max-width:88rem;margin:2.5rem auto 0;font-family:var(--font-serif);font-size:clamp(1.6rem, 6.4vw, 6rem);font-weight:600;text-transform:uppercase;line-height:1.08;letter-spacing:-0.01em;position:relative;z-index:0;padding:0 1.25rem;}
+  @media (min-width:640px){ .ghost-heading{margin-top:3rem;padding:0;} }
+  .ghost-row{display:flex;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;}
+  .ghost-word{color:var(--ghost);transition:transform .3s ease;}
+  .ghost-word.ink{color:var(--ink);}
+
+  .coach-wrap{position:relative;z-index:10;display:flex;justify-content:center;margin-top:-1.5rem;}
+  @media (min-width:640px){ .coach-wrap{margin-top:-6rem;} }
+  .coach-card{width:11rem;aspect-ratio:3/4;border-radius:var(--radius-card);overflow:hidden;background:var(--brand);position:relative;transform:rotate(6deg);}
+  @media (min-width:640px){ .coach-card{width:16rem;} }
+  .coach-card img{width:100%;height:100%;object-fit:cover;transition:opacity .5s ease;}
+  .coach-caption{position:absolute;left:0.75rem;right:0.75rem;bottom:0.75rem;border-radius:0.75rem;background:rgba(43,34,28,0.45);color:#fff;backdrop-filter:blur(6px);padding:0.5rem 0.75rem;}
+  .coach-caption strong{font-size:0.875rem;display:block;}
+  .coach-caption span{font-size:0.65rem;opacity:0.8;}
+
+  .trust-controls{position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;margin-top:3rem;max-width:24rem;margin-left:auto;margin-right:auto;}
+  @media (min-width:640px){ .trust-controls{margin-top:5rem;} }
+
+  /* ===================== Programs (Room categories) ===================== */
+  #rooms.programs-section{background:var(--surface);padding:5rem 1.5rem;}
+  @media (min-width:640px){ #rooms.programs-section{padding:6rem 2.5rem;} }
+  .section-heading{font-family:var(--font-serif);font-size:2.6rem;font-weight:600;line-height:0.98;letter-spacing:-0.01em;margin-top:1rem;}
+  @media (min-width:640px){ .section-heading{font-size:3rem;} }
+
+  .program-list{margin-top:3.5rem;}
+  .program-row{display:flex;align-items:center;gap:1.5rem;padding:1.75rem 0;border-top:1px solid var(--hairline);transition:background .2s ease;}
+  .program-list li:last-child .program-row{border-bottom:1px solid var(--hairline);}
+  .program-row:focus-visible{background:var(--background);}
+  .program-index{width:2.5rem;font-size:0.875rem;font-weight:600;color:var(--ink-soft);flex-shrink:0;}
+  .program-body{flex:1;}
+  .program-body h3{font-family:var(--font-serif);font-size:1.5rem;font-weight:600;}
+  @media (min-width:640px){ .program-body h3{font-size:1.9rem;} }
+  .program-body p{font-size:0.875rem;color:var(--ink-soft);margin-top:0.35rem;}
+  .program-arrow{width:2.75rem;height:2.75rem;border-radius:50%;border:1px solid var(--hairline);display:grid;place-items:center;flex-shrink:0;transition:transform .25s ease, opacity .25s ease;opacity:0.55;}
+  .program-row:hover .program-arrow{transform:translateX(8px);opacity:1;}
+  .program-arrow svg{width:1.125rem;height:1.125rem;}
+
+  /* ===================== Facilities (Explore spaces) ===================== */
+  #amenities.facilities-section{background:var(--background);border-radius:var(--radius-card-lg);margin-top:-2.5rem;padding:4rem 1.5rem 5rem;position:relative;z-index:5;}
+  @media (min-width:640px){ #amenities.facilities-section{padding-left:2.5rem;padding-right:2.5rem;} }
+  .facilities-grid{display:grid;gap:2.5rem;align-items:end;}
+  @media (min-width:768px){ .facilities-grid{grid-template-columns:1fr 1fr;} }
+  .facilities-intro{max-width:24rem;}
+  .facilities-icon{width:4rem;height:4rem;border-radius:var(--radius-card);object-fit:cover;}
+  .facilities-heading{font-family:var(--font-serif);font-size:2.4rem;font-weight:600;line-height:0.98;margin-top:1.5rem;}
+  @media (min-width:640px){ .facilities-heading{font-size:3rem;} }
+  .facilities-body{font-size:0.875rem;color:var(--ink-soft);max-width:20rem;margin-top:1.5rem;line-height:1.7;}
+  .facilities-body span{display:inline-block;}
+
+  .court-cards{display:grid;grid-template-columns:1fr;gap:1.25rem;}
+  @media (min-width:480px){ .court-cards{grid-template-columns:1fr 1fr;} }
+  .court-tile{position:relative;aspect-ratio:3/4;border-radius:var(--radius-card);overflow:hidden;background:var(--surface);}
+  @media (min-width:768px){ .court-tile:nth-child(2n){margin-top:2rem;} }
+  .court-tile img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1);}
+  .court-tile:hover img{transform:scale(1.05);}
+  .court-caption{position:absolute;left:0.75rem;right:0.75rem;bottom:0.75rem;border-radius:0.75rem;backdrop-filter:blur(6px);color:#fff;padding:0.75rem 1rem;}
+  .court-caption.tone-warm{background:rgba(193,113,45,0.55);}
+  .court-caption.tone-deep{background:rgba(43,34,28,0.5);}
+  .court-caption.tone-gold{background:rgba(201,161,106,0.6);}
+  .court-caption.tone-dark{background:rgba(43,34,28,0.6);}
+  .court-caption strong{font-size:0.875rem;display:block;}
+  .court-caption span{font-size:0.65rem;opacity:0.85;}
+
+  .amenities-details{margin-top:4rem;}
+  .amenities-details-head{max-width:36rem;}
+  .amenities-details-head p.eyebrow{margin-bottom:0.25rem;}
+  .amenities-list{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-top:2.5rem;}
+  @media (min-width:640px){ .amenities-list{grid-template-columns:repeat(3,1fr);} }
+  @media (min-width:1024px){ .amenities-list{grid-template-columns:repeat(4,1fr);} }
+  .amenity-item{border-radius:var(--radius-card);background:var(--surface);padding:1.5rem;display:flex;flex-direction:column;gap:0.75rem;transition:transform .3s ease, background .3s ease;}
+  .amenity-item:hover{transform:translateY(-6px);background:var(--surface-card);box-shadow:0 12px 24px rgba(43,34,28,0.1);}
+  .amenity-icon{width:2.75rem;height:2.75rem;border-radius:50%;background:var(--background);display:grid;place-items:center;color:var(--brand);flex-shrink:0;}
+  .amenity-icon svg{width:1.4rem;height:1.4rem;}
+  .amenity-item h3{font-family:var(--font-serif);font-size:1.1rem;font-weight:600;}
+  .amenity-item p{font-size:0.8rem;color:var(--ink-soft);line-height:1.6;}
+
+  /* ===================== Stats ===================== */
+  #stats{background:var(--brand-deep);color:#fff;border-radius:var(--radius-card-lg);margin-top:0.75rem;padding:5rem 1.5rem;}
+  @media (min-width:640px){ #stats{padding-left:2.5rem;padding-right:2.5rem;} }
+  .stats-heading{font-family:var(--font-serif);font-size:2.6rem;font-weight:600;margin-top:1rem;}
+  @media (min-width:640px){ .stats-heading{font-size:3rem;} }
+  .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3rem 2rem;margin-top:4rem;}
+  @media (min-width:1024px){ .stats-grid{grid-template-columns:repeat(4,1fr);} }
+  .stat-cell{border-top:1px solid rgba(255,255,255,0.2);padding-top:1.25rem;}
+  .stat-value{font-family:var(--font-serif);font-size:3rem;font-weight:600;letter-spacing:-0.01em;}
+  @media (min-width:640px){ .stat-value{font-size:4rem;} }
+  .stat-label{font-size:0.875rem;color:rgba(255,255,255,0.65);margin-top:0.75rem;}
+
+  /* ===================== Testimonials ===================== */
+  #testimonials.testimonials-section{background:var(--background);padding:5rem 1.5rem;}
+  @media (min-width:640px){ #testimonials.testimonials-section{padding:6rem 2.5rem;} }
+  .testimonials-grid{display:grid;gap:1.25rem;margin-top:3.5rem;}
+  @media (min-width:768px){ .testimonials-grid{grid-template-columns:repeat(3,1fr);} }
+  .testimonial-card{display:flex;flex-direction:column;justify-content:space-between;height:100%;border-radius:var(--radius-card);background:var(--surface);padding:1.75rem;transition:transform .3s ease;}
+  .testimonial-card:hover{transform:translateY(-8px);}
+  .quote-mark{font-family:var(--font-serif);font-size:2.5rem;color:var(--brand);line-height:1;}
+  .testimonial-card blockquote{font-size:1.1rem;line-height:1.6;color:var(--ink);margin-top:1rem;}
+  .testimonial-foot{border-top:1px solid var(--hairline);padding-top:1rem;margin-top:1.5rem;}
+  .testimonial-foot strong{display:block;font-weight:600;}
+  .testimonial-foot span{font-size:0.875rem;color:var(--ink-soft);}
+
+  /* ===================== Footer ===================== */
+  footer#contact{background:var(--brand-deep);color:#fff;border-radius:var(--radius-card-lg);margin-top:0.75rem;padding:3.5rem 1.5rem;}
+  @media (min-width:640px){ footer#contact{padding:4rem 2.5rem;} }
+  .footer-cta{border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:3.5rem;display:flex;flex-direction:column;gap:1.5rem;}
+  @media (min-width:640px){ .footer-cta{flex-direction:row;justify-content:space-between;align-items:flex-end;} }
+  .footer-cta-heading{font-family:var(--font-serif);font-size:3rem;font-weight:600;line-height:0.94;margin-top:1rem;}
+  @media (min-width:640px){ .footer-cta-heading{font-size:4rem;} }
+
+  .footer-cols{padding:3.5rem 0;display:grid;gap:2.5rem;}
+  @media (min-width:768px){ .footer-cols{grid-template-columns:1.4fr 1fr 1fr 1fr;} }
+  .footer-brand{max-width:20rem;}
+  .footer-brand-row{display:flex;align-items:center;gap:0.5rem;font-family:var(--font-serif);font-weight:600;text-transform:uppercase;letter-spacing:0.2em;font-size:1.1rem;}
+  .footer-brand p{font-size:0.875rem;color:rgba(255,255,255,0.65);margin-top:1rem;}
+  address{font-style:normal;margin-top:1.5rem;font-size:0.875rem;color:rgba(255,255,255,0.8);display:flex;flex-direction:column;gap:0.35rem;}
+  address a:hover{color:var(--brand-light);}
+  address .muted{color:rgba(255,255,255,0.55);}
+
+  .footer-nav h3{font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.5);margin-bottom:1rem;}
+  .footer-nav ul{display:flex;flex-direction:column;gap:0.75rem;font-size:0.875rem;color:rgba(255,255,255,0.8);}
+  .footer-nav a:hover{color:var(--brand-light);}
+
+  .footer-bottom{border-top:1px solid rgba(255,255,255,0.15);padding-top:2rem;display:flex;flex-direction:column;gap:1.25rem;font-size:0.875rem;color:rgba(255,255,255,0.6);}
+  @media (min-width:640px){ .footer-bottom{flex-direction:row;justify-content:space-between;align-items:center;} }
+  .footer-bottom nav{display:flex;gap:1.25rem;}
+  .footer-bottom nav a:hover{color:#fff;}
+
+  /* ===================== Contact modal ===================== */
+  #contact-modal{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;padding:0.75rem;pointer-events:none;}
+  @media (min-width:640px){ #contact-modal{align-items:center;padding:1.5rem;} }
+  #contact-modal.open{pointer-events:auto;}
+  .modal-backdrop{position:absolute;inset:0;background:rgba(43,34,28,0.4);backdrop-filter:blur(4px);opacity:0;transition:opacity .35s ease;}
+  #contact-modal.open .modal-backdrop{opacity:1;}
+  .modal-panel{position:relative;max-height:92svh;overflow-y:auto;width:100%;max-width:32rem;border-radius:var(--radius-card-lg);background:var(--surface-card);padding:1.5rem;box-shadow:0 30px 60px rgba(43,34,28,0.35);opacity:0;transform:translateY(28px) scale(0.96);transition:opacity .4s cubic-bezier(.16,1,.3,1), transform .4s cubic-bezier(.16,1,.3,1);}
+  @media (min-width:640px){ .modal-panel{padding:2rem;} }
+  #contact-modal.open .modal-panel{opacity:1;transform:translateY(0) scale(1);}
+  .modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+  .modal-title{font-family:var(--font-serif);font-size:2.2rem;font-weight:600;line-height:1;margin-top:0.75rem;}
+  @media (min-width:640px){ .modal-title{font-size:2.6rem;} }
+  .icon-close{width:2.5rem;height:2.5rem;border-radius:50%;background:var(--surface);display:grid;place-items:center;flex-shrink:0;transition:background .2s;}
+  .icon-close:hover{background:var(--hairline);}
+  .icon-close svg{width:1rem;height:1rem;transition:transform .25s ease;}
+  .icon-close:hover svg{transform:rotate(90deg);}
+
+  .modal-form{margin-top:1.75rem;display:flex;flex-direction:column;gap:1rem;}
+  .field label{font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink-soft);display:block;margin-bottom:0.4rem;}
+  .field input,.field textarea{width:100%;border-radius:0.75rem;border:1px solid var(--hairline);background:var(--background);padding:0.75rem 1rem;font-size:0.9rem;font-family:inherit;color:var(--ink);}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--brand-light);box-shadow:0 0 0 2px rgba(87,144,230,0.15);}
+  .modal-submit{align-self:flex-start;border-radius:var(--radius-pill);background:var(--ink);color:#fff;padding:0.9rem 1.75rem;font-size:0.875rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;transition:background .2s;}
+  .modal-submit:hover{background:var(--brand-deep);}
+  .modal-submit:disabled{opacity:0.6;cursor:default;}
+
+  .modal-success{display:none;margin-top:2rem;border-radius:var(--radius-card);background:var(--surface);padding:1.5rem;text-align:center;}
+  .modal-success.show{display:block;}
+  .modal-success .check{width:3rem;height:3rem;border-radius:50%;background:var(--brand);display:grid;place-items:center;margin:0 auto;}
+  .modal-success .check svg{width:1.5rem;height:1.5rem;color:#fff;}
+  .modal-success h3{font-family:var(--font-serif);font-size:1.25rem;margin-top:1rem;}
+  .modal-success p{font-size:0.9rem;color:var(--ink-soft);margin-top:0.5rem;}
+  .modal-success .pill-btn{margin-top:1.25rem;}
+
+  /* ===================== Fullscreen menu ===================== */
+  #menu-overlay{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;pointer-events:none;}
+  #menu-overlay.open{pointer-events:auto;}
+  .menu-backdrop{position:absolute;inset:0;background:var(--brand-deep);opacity:0;transition:opacity .4s ease;}
+  #menu-overlay.open .menu-backdrop{opacity:1;}
+  .menu-panel{position:relative;height:100%;display:flex;flex-direction:column;color:#fff;padding:0.5rem;opacity:0;transform:translateY(-24px);transition:opacity .4s cubic-bezier(.16,1,.3,1), transform .4s cubic-bezier(.16,1,.3,1);}
+  @media (min-width:640px){ .menu-panel{padding:0.75rem;} }
+  #menu-overlay.open .menu-panel{opacity:1;transform:translateY(0);}
+  .menu-inner{flex:1;display:flex;flex-direction:column;padding:1.5rem;}
+  @media (min-width:640px){ .menu-inner{padding:2.5rem;} }
+  .menu-top{display:flex;align-items:center;justify-content:space-between;}
+  .menu-brand{display:flex;align-items:center;gap:0.5rem;font-family:var(--font-serif);text-transform:uppercase;letter-spacing:0.2em;}
+  .menu-close{width:2.5rem;height:2.5rem;border-radius:50%;background:rgba(255,255,255,0.15);display:grid;place-items:center;transition:background .2s;}
+  .menu-close:hover{background:rgba(255,255,255,0.25);}
+  .menu-close svg{width:1rem;height:1rem;transition:transform .25s ease;}
+  .menu-close:hover svg{transform:rotate(90deg);}
+  .menu-nav{flex:1;display:flex;flex-direction:column;justify-content:center;gap:0.5rem;}
+  .menu-nav a{display:block;font-family:var(--font-serif);font-size:2.8rem;font-weight:600;line-height:1.1;transition:color .2s ease, transform .5s cubic-bezier(.16,1,.3,1), opacity .5s cubic-bezier(.16,1,.3,1);opacity:0;transform:translateY(28px);}
+  @media (min-width:640px){ .menu-nav a{font-size:4.5rem;} }
+  #menu-overlay.open .menu-nav a{opacity:1;transform:translateY(0);}
+  .menu-nav a:hover{color:var(--brand-light);}
+  .menu-bottom{border-top:1px solid rgba(255,255,255,0.15);padding-top:2rem;display:flex;flex-direction:column;gap:1.25rem;}
+  @media (min-width:640px){ .menu-bottom{flex-direction:row;justify-content:space-between;align-items:center;} }
+  .menu-social{display:flex;gap:1rem;font-size:0.875rem;color:rgba(255,255,255,0.7);}
+  .menu-social a:hover{color:#fff;}
+
+  @media (prefers-reduced-motion: reduce){
+    .clip > span,.word-fade,.rise,.rise-lg,.scale-in,#loader,.modal-panel,.menu-panel,.menu-nav a{transition-duration:1ms !important;}
+  }
+</style>
 </head>
-<body class="bg-cream text-espresso font-sans antialiased">
+<body class="loading">
 
-<!-- ============ SKIP LINK ============ -->
-<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:bg-espresso focus:text-cream focus:px-4 focus:py-2 focus:rounded">Skip to main content</a>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
-<!-- ============ NAVIGATION ============ -->
-<header id="site-header" class="fixed top-0 inset-x-0 z-40 transition-all duration-300 bg-cream/95 backdrop-blur border-b border-bark/10">
-  <nav class="max-w-7xl mx-auto flex items-center justify-between px-5 sm:px-8 py-3" aria-label="Primary">
-    <a href="#hero" class="flex items-center gap-3 group" aria-label="Grand Hotel home">
-      <span class="flex h-11 w-11 items-center justify-center rounded-full border-2 border-terracotta text-terracotta font-serif text-lg font-semibold tracking-wide group-hover:bg-terracotta group-hover:text-cream transition-colors">GH</span>
-      <span class="font-serif text-xl sm:text-2xl font-semibold tracking-wide text-espresso">Grand Hotel</span>
-    </a>
-
-    <ul class="hidden lg:flex items-center gap-8 font-medium text-sm text-bark">
-      <li><a href="#about" class="hover:text-terracotta transition-colors">Our Story</a></li>
-      <li><a href="#rooms" class="hover:text-terracotta transition-colors">Rooms &amp; Suites</a></li>
-      <li><a href="#amenities" class="hover:text-terracotta transition-colors">Amenities</a></li>
-      <li><a href="#gallery" class="hover:text-terracotta transition-colors">Gallery</a></li>
-      <li><a href="#testimonials" class="hover:text-terracotta transition-colors">Reviews</a></li>
-      <li><a href="#location" class="hover:text-terracotta transition-colors">Location</a></li>
-    </ul>
-
-    <div class="flex items-center gap-3">
-      <a href="#booking" class="hidden sm:inline-flex items-center rounded-full bg-terracotta hover:bg-terracotta-dark text-cream text-sm font-semibold px-5 py-2.5 transition-colors shadow-sm">
-        Book Now
-      </a>
-      <button id="menu-toggle" class="lg:hidden flex flex-col justify-center items-center h-11 w-11 rounded-full border border-bark/20 text-espresso" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu">
-        <span class="sr-only">Menu</span>
-        <span id="hamburger-icon" class="block w-5 h-[2px] bg-espresso relative before:content-[''] before:absolute before:w-5 before:h-[2px] before:bg-espresso before:-translate-y-[7px] after:content-[''] after:absolute after:w-5 after:h-[2px] after:bg-espresso after:translate-y-[7px]"></span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Mobile menu -->
-  <div id="mobile-menu" class="lg:hidden hidden border-t border-bark/10 bg-cream px-5 pb-6 pt-2">
-    <ul class="flex flex-col gap-1 font-medium text-bark">
-      <li><a href="#about" class="block py-3 hover:text-terracotta transition-colors">Our Story</a></li>
-      <li><a href="#rooms" class="block py-3 hover:text-terracotta transition-colors">Rooms &amp; Suites</a></li>
-      <li><a href="#amenities" class="block py-3 hover:text-terracotta transition-colors">Amenities</a></li>
-      <li><a href="#gallery" class="block py-3 hover:text-terracotta transition-colors">Gallery</a></li>
-      <li><a href="#testimonials" class="block py-3 hover:text-terracotta transition-colors">Reviews</a></li>
-      <li><a href="#location" class="block py-3 hover:text-terracotta transition-colors">Location</a></li>
-      <li class="pt-3"><a href="#booking" class="block text-center rounded-full bg-terracotta text-cream font-semibold px-5 py-3">Book Now</a></li>
-    </ul>
+<!-- ===================== Loader ===================== -->
+<div id="loader" aria-hidden="true">
+  <div class="loader-mark">
+    <span class="brand-mark" style="width:1.75rem;height:1.75rem;">GH</span>
+    <span>Grand Hotel</span>
   </div>
-</header>
+  <div class="loader-track"><div class="loader-fill" id="loader-fill"></div></div>
+</div>
 
 <main id="main-content">
 
-  <!-- ============ HERO ============ -->
-  <section id="hero" class="relative min-h-screen flex items-end">
-    <div class="absolute inset-0">
-      <img
-        src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80"
-        alt="Grand Hotel's sunlit lobby with warm wood tones and elegant seating"
-        class="w-full h-full object-cover"
-        fetchpriority="high"
-      />
-      <div class="absolute inset-0 bg-gradient-to-t from-espresso/90 via-espresso/40 to-espresso/20"></div>
+  <!-- ===================== Hero ===================== -->
+  <section id="hero">
+    <header class="site-header">
+      <nav class="nav-left" aria-label="Primary">
+        <a href="#rooms" data-anchor>Rooms &amp; Suites</a>
+        <a href="#amenities" data-anchor>Amenities &amp; Spa</a>
+      </nav>
+      <a href="#hero" class="brand-center" data-anchor aria-label="Grand Hotel home">
+        <span class="brand-mark">GH</span>
+        <span>Grand Hotel</span>
+      </a>
+      <div class="nav-right">
+        <button class="book-link" data-open-modal>Reserve a Stay</button>
+        <button class="burger" id="menu-open" aria-label="Open menu" aria-expanded="false" aria-controls="menu-overlay">
+          <span class="bars"><span></span><span></span></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-bg-inner" id="hero-parallax">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80" alt="Grand Hotel's sunlit lobby with warm wood tones and elegant seating" fetchpriority="high" />
+      </div>
+      <div class="hero-gradient"></div>
     </div>
 
-    <div class="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 pb-16 pt-40">
-      <p class="fade-in text-gold font-semibold tracking-[0.2em] text-xs sm:text-sm uppercase mb-4">Est. 2010 · Downtown Riverside District</p>
-      <h1 class="fade-in font-serif text-4xl sm:text-6xl lg:text-7xl font-semibold text-cream max-w-3xl leading-[1.05]">
-        A grand welcome, <br class="hidden sm:block" /> every single stay.
-      </h1>
-      <p class="fade-in mt-6 text-cream/90 text-lg sm:text-xl max-w-xl">
-        Boutique comfort, attentive service, and quiet luxury in the heart of the city — Grand Hotel is where your stay becomes the best part of your trip.
-      </p>
-      <div class="fade-in mt-8 flex flex-wrap items-center gap-4">
-        <a href="#booking" class="inline-flex items-center gap-2 rounded-full bg-terracotta hover:bg-terracotta-dark text-cream font-semibold px-7 py-3.5 transition-colors shadow-lg">
-          Check Availability
-        </a>
-        <a href="#rooms" class="inline-flex items-center gap-2 rounded-full border border-cream/40 text-cream hover:bg-cream/10 font-semibold px-7 py-3.5 transition-colors">
-          View Rooms &amp; Suites
-        </a>
-      </div>
-      <div class="fade-in mt-6 flex items-center gap-2 text-cream/85 text-sm">
-        <span class="flex text-gold" aria-hidden="true">★★★★★</span>
-        <span>4.8/5 from 1,240+ verified guests</span>
-      </div>
+    <div class="hero-title-wrap">
+      <h1 id="hero-title" class="clip-wrap"></h1>
     </div>
 
-    <!-- Booking widget -->
-    <div id="booking" class="relative z-10 w-full">
-      <div class="max-w-6xl mx-auto px-5 sm:px-8 -mb-10 sm:-mb-12">
-        <form id="booking-form" class="fade-in bg-cream rounded-2xl shadow-2xl border border-bark/10 p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end" aria-label="Check availability">
-          <div class="flex flex-col gap-1.5">
-            <label for="checkin" class="text-xs font-semibold uppercase tracking-wide text-bark">Check-in</label>
-            <input type="date" id="checkin" name="checkin" required class="rounded-lg border border-bark/20 bg-ivory px-3.5 py-2.5 text-sm text-espresso focus:outline-none focus:ring-2 focus:ring-terracotta" />
-          </div>
-          <div class="flex flex-col gap-1.5">
-            <label for="checkout" class="text-xs font-semibold uppercase tracking-wide text-bark">Check-out</label>
-            <input type="date" id="checkout" name="checkout" required class="rounded-lg border border-bark/20 bg-ivory px-3.5 py-2.5 text-sm text-espresso focus:outline-none focus:ring-2 focus:ring-terracotta" />
-          </div>
-          <div class="flex flex-col gap-1.5">
-            <label for="guests" class="text-xs font-semibold uppercase tracking-wide text-bark">Guests</label>
-            <select id="guests" name="guests" class="rounded-lg border border-bark/20 bg-ivory px-3.5 py-2.5 text-sm text-espresso focus:outline-none focus:ring-2 focus:ring-terracotta">
-              <option>1 Guest</option>
-              <option selected>2 Guests</option>
-              <option>3 Guests</option>
-              <option>4+ Guests</option>
-            </select>
-          </div>
-          <div class="flex flex-col gap-1.5">
-            <label for="room-type" class="text-xs font-semibold uppercase tracking-wide text-bark">Room Type</label>
-            <select id="room-type" name="room-type" class="rounded-lg border border-bark/20 bg-ivory px-3.5 py-2.5 text-sm text-espresso focus:outline-none focus:ring-2 focus:ring-terracotta">
-              <option>Any</option>
-              <option>Classic King</option>
-              <option>Deluxe Terrace</option>
-              <option>Executive Suite</option>
-              <option>The Penthouse</option>
-            </select>
-          </div>
-          <button type="submit" class="rounded-lg bg-terracotta hover:bg-terracotta-dark text-cream font-semibold px-5 py-3 text-sm transition-colors w-full">
-            Check Availability
-          </button>
-        </form>
-        <p id="booking-feedback" class="fade-in mt-3 text-sm text-bark/80 text-center" role="status" aria-live="polite"></p>
-      </div>
-    </div>
-  </section>
+    <div class="hero-bottom">
+      <p class="hero-tagline" id="hero-tagline"></p>
 
-  <!-- ============ TRUST BAR ============ -->
-  <section class="bg-espresso text-cream pt-20 sm:pt-24 pb-12">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-      <div class="fade-in flex flex-col items-center gap-3">
-        <svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-        <p class="font-semibold text-sm">Free Cancellation</p>
-        <p class="text-xs text-cream/70">Up to 48 hours before arrival</p>
-      </div>
-      <div class="fade-in flex flex-col items-center gap-3">
-        <svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.752a1.125 1.125 0 0 0-1.006 0L3.622 6.19A1.125 1.125 0 0 0 3 7.196v13.303c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"/></svg>
-        <p class="font-semibold text-sm">Best Price Guarantee</p>
-        <p class="text-xs text-cream/70">Book direct and save</p>
-      </div>
-      <div class="fade-in flex flex-col items-center gap-3">
-        <svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-        <p class="font-semibold text-sm">24/7 Front Desk</p>
-        <p class="text-xs text-cream/70">Always here to help</p>
-      </div>
-      <div class="fade-in flex flex-col items-center gap-3">
-        <svg class="w-8 h-8 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12 20.25h.008v.008H12v-.008Z"/></svg>
-        <p class="font-semibold text-sm">Complimentary WiFi</p>
-        <p class="text-xs text-cream/70">High-speed, throughout</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ ABOUT ============ -->
-  <section id="about" class="py-20 sm:py-28 bg-cream">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-      <div class="fade-in order-2 lg:order-1">
-        <p class="text-terracotta font-semibold tracking-[0.2em] text-xs uppercase mb-4">Our Story</p>
-        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight mb-6">Fifteen years of making strangers feel like regulars.</h2>
-        <p class="text-bark text-base sm:text-lg leading-relaxed mb-5">
-          Grand Hotel opened in 2010 in a beautifully restored early-1900s trading house, three blocks from the river. We kept the original brickwork and timber beams, and built a hotel around them that feels less like a chain and more like a well-loved home — one with excellent linens.
-        </p>
-        <p class="text-bark text-base sm:text-lg leading-relaxed mb-8">
-          Every room is designed by our in-house team, every breakfast pastry is baked before sunrise, and every member of our staff is trained to remember your name by the second morning. We're independently owned, deeply local, and quietly obsessed with getting the details right.
-        </p>
-        <div class="grid grid-cols-3 gap-6 border-t border-bark/15 pt-8">
-          <div>
-            <p class="font-serif text-3xl font-semibold text-terracotta">15</p>
-            <p class="text-xs text-bark uppercase tracking-wide mt-1">Years Open</p>
-          </div>
-          <div>
-            <p class="font-serif text-3xl font-semibold text-terracotta">64</p>
-            <p class="text-xs text-bark uppercase tracking-wide mt-1">Rooms &amp; Suites</p>
-          </div>
-          <div>
-            <p class="font-serif text-3xl font-semibold text-terracotta">4.8★</p>
-            <p class="text-xs text-bark uppercase tracking-wide mt-1">Average Rating</p>
-          </div>
-        </div>
-      </div>
-      <div class="fade-in order-1 lg:order-2">
-        <img
-          src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=1000&q=80"
-          alt="Warm, wood-paneled lounge area in the Grand Hotel lobby with soft seating"
-          loading="lazy"
-          class="rounded-2xl shadow-xl w-full h-[420px] sm:h-[520px] object-cover"
-        />
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ ROOMS & SUITES ============ -->
-  <section id="rooms" class="py-20 sm:py-28 bg-ivory">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8">
-      <div class="fade-in text-center max-w-2xl mx-auto mb-14">
-        <p class="text-terracotta font-semibold tracking-[0.2em] text-xs uppercase mb-4">Rooms &amp; Suites</p>
-        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight">Find your kind of quiet.</h2>
-        <p class="text-bark text-base sm:text-lg mt-4">From cozy king rooms to a full-floor penthouse — each is designed for genuine rest.</p>
-      </div>
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7">
-
-        <!-- Room 1 -->
-        <article class="fade-in bg-cream rounded-2xl overflow-hidden shadow-sm border border-bark/10 flex flex-col">
-          <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=700&q=80" alt="Classic King room with warm linens and a reading nook" loading="lazy" class="h-56 w-full object-cover" />
-          <div class="p-6 flex flex-col flex-1">
-            <h3 class="font-serif text-xl font-semibold mb-1">Classic King</h3>
-            <p class="text-sm text-bark mb-4 flex-1">A serene retreat with a plush king bed, warm oak floors, and a reading nook bathed in morning light.</p>
-            <ul class="text-xs text-bark/80 space-y-1 mb-5">
-              <li>· 320 sq ft · City view</li>
-              <li>· Rainfall shower</li>
-              <li>· Nespresso bar</li>
-            </ul>
-            <div class="flex items-center justify-between mt-auto">
-              <div>
-                <p class="text-xs text-bark/70">From</p>
-                <p class="font-serif text-xl font-semibold text-espresso">$189<span class="text-sm font-sans font-normal text-bark">/night</span></p>
-              </div>
-              <a href="#booking" class="rounded-full bg-terracotta hover:bg-terracotta-dark text-cream text-sm font-semibold px-5 py-2.5 transition-colors">Reserve</a>
+      <div class="hero-right">
+        <div class="collection-slider">
+          <div class="glass-card collection-card" id="collection-card">
+            <img id="collection-img" src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=200&q=80" alt="" loading="lazy" />
+            <div>
+              <p class="collection-brand" id="collection-brand">Grand Hotel</p>
+              <p class="collection-title" id="collection-title">Classic King</p>
+              <a href="#rooms" class="collection-cta" id="collection-cta" data-anchor>View room →</a>
             </div>
           </div>
+          <div class="dots light" id="collection-dots"></div>
+        </div>
+
+        <article class="glass-card membership-card rise" id="membership-card">
+          <div class="membership-left">
+            <p class="membership-value">1,240+</p>
+            <div class="avatar-row" aria-hidden="true">
+              <span style="background:#c1712d"></span>
+              <span style="background:#c9a16a"></span>
+              <span style="background:#a65a22"></span>
+              <span style="background:#fbf4e9"></span>
+            </div>
+            <p class="membership-caption">Guests hosted this year</p>
+          </div>
+          <img class="membership-img" src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=200&q=80" alt="Warm, wood-paneled lounge area in the Grand Hotel lobby" loading="lazy" />
         </article>
-
-        <!-- Room 2 -->
-        <article class="fade-in bg-cream rounded-2xl overflow-hidden shadow-sm border border-bark/10 flex flex-col">
-          <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=700&q=80" alt="Deluxe Terrace room with private balcony seating" loading="lazy" class="h-56 w-full object-cover" />
-          <div class="p-6 flex flex-col flex-1">
-            <div class="flex items-center gap-2 mb-1">
-              <h3 class="font-serif text-xl font-semibold">Deluxe Terrace</h3>
-              <span class="text-[10px] font-semibold uppercase tracking-wide bg-terracotta/10 text-terracotta-dark px-2 py-0.5 rounded-full">Popular</span>
-            </div>
-            <p class="text-sm text-bark mb-4 flex-1">Our most requested room — a private terrace overlooking the courtyard garden, perfect with a morning coffee.</p>
-            <ul class="text-xs text-bark/80 space-y-1 mb-5">
-              <li>· 380 sq ft · Garden view</li>
-              <li>· Private terrace</li>
-              <li>· Soaking tub</li>
-            </ul>
-            <div class="flex items-center justify-between mt-auto">
-              <div>
-                <p class="text-xs text-bark/70">From</p>
-                <p class="font-serif text-xl font-semibold text-espresso">$239<span class="text-sm font-sans font-normal text-bark">/night</span></p>
-              </div>
-              <a href="#booking" class="rounded-full bg-terracotta hover:bg-terracotta-dark text-cream text-sm font-semibold px-5 py-2.5 transition-colors">Reserve</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Room 3 -->
-        <article class="fade-in bg-cream rounded-2xl overflow-hidden shadow-sm border border-bark/10 flex flex-col">
-          <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=700&q=80" alt="Executive Suite living area with separate lounge space" loading="lazy" class="h-56 w-full object-cover" />
-          <div class="p-6 flex flex-col flex-1">
-            <h3 class="font-serif text-xl font-semibold mb-1">Executive Suite</h3>
-            <p class="text-sm text-bark mb-4 flex-1">A separate living area and workspace make this the choice for longer stays and quiet business trips.</p>
-            <ul class="text-xs text-bark/80 space-y-1 mb-5">
-              <li>· 540 sq ft · River view</li>
-              <li>· Separate lounge</li>
-              <li>· Complimentary minibar</li>
-            </ul>
-            <div class="flex items-center justify-between mt-auto">
-              <div>
-                <p class="text-xs text-bark/70">From</p>
-                <p class="font-serif text-xl font-semibold text-espresso">$329<span class="text-sm font-sans font-normal text-bark">/night</span></p>
-              </div>
-              <a href="#booking" class="rounded-full bg-terracotta hover:bg-terracotta-dark text-cream text-sm font-semibold px-5 py-2.5 transition-colors">Reserve</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Room 4 -->
-        <article class="fade-in bg-cream rounded-2xl overflow-hidden shadow-sm border border-bark/10 flex flex-col">
-          <img src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=700&q=80" alt="The Penthouse suite with panoramic skyline windows" loading="lazy" class="h-56 w-full object-cover" />
-          <div class="p-6 flex flex-col flex-1">
-            <h3 class="font-serif text-xl font-semibold mb-1">The Penthouse</h3>
-            <p class="text-sm text-bark mb-4 flex-1">The whole top floor: panoramic skyline windows, a private dining table, and a butler on call.</p>
-            <ul class="text-xs text-bark/80 space-y-1 mb-5">
-              <li>· 900 sq ft · Skyline view</li>
-              <li>· Private dining table</li>
-              <li>· 24/7 butler service</li>
-            </ul>
-            <div class="flex items-center justify-between mt-auto">
-              <div>
-                <p class="text-xs text-bark/70">From</p>
-                <p class="font-serif text-xl font-semibold text-espresso">$549<span class="text-sm font-sans font-normal text-bark">/night</span></p>
-              </div>
-              <a href="#booking" class="rounded-full bg-terracotta hover:bg-terracotta-dark text-cream text-sm font-semibold px-5 py-2.5 transition-colors">Reserve</a>
-            </div>
-          </div>
-        </article>
-
-      </div>
-      <p class="fade-in text-center text-sm text-bark/80 mt-8">Only <span class="font-semibold text-terracotta-dark">3 Deluxe Terrace rooms</span> left at this week's rate.</p>
-    </div>
-  </section>
-
-  <!-- ============ AMENITIES ============ -->
-  <section id="amenities" class="py-20 sm:py-28 bg-cream">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8">
-      <div class="fade-in text-center max-w-2xl mx-auto mb-14">
-        <p class="text-terracotta font-semibold tracking-[0.2em] text-xs uppercase mb-4">Amenities</p>
-        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight">Everything you need, nothing you don't.</h2>
-      </div>
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
-          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H17.25a4.5 4.5 0 1 0-.108-8.995 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z"/></svg>
-          <p class="font-semibold text-sm">Rooftop Pool</p>
-        </div>
-        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
-          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>
-          <p class="font-semibold text-sm">Full-Service Spa</p>
-        </div>
-        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
-          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 3.75c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>
-          <p class="font-semibold text-sm">24-Hour Gym</p>
-        </div>
-        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
-          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12"/></svg>
-          <p class="font-semibold text-sm">Rooftop Restaurant</p>
-        </div>
-        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
-          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z"/></svg>
-          <p class="font-semibold text-sm">Valet Parking</p>
-        </div>
-        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
-          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0v-.443c0-.055.014-.109.04-.157l2.418-4.435a2.25 2.25 0 0 1 1.972-1.164H16.82a2.25 2.25 0 0 1 1.972 1.164l2.418 4.435c.026.048.04.102.04.157v.443"/></svg>
-          <p class="font-semibold text-sm">Business Center</p>
-        </div>
-        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
-          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
-          <p class="font-semibold text-sm">Turndown Service</p>
-        </div>
-        <div class="fade-in flex flex-col items-center text-center gap-3 bg-ivory rounded-xl p-6 border border-bark/10">
-          <svg class="w-7 h-7 text-terracotta" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21M6.75 6.75h10.5v10.5H6.75V6.75Z"/></svg>
-          <p class="font-semibold text-sm">Pet Friendly</p>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ GALLERY ============ -->
-  <section id="gallery" class="py-20 sm:py-28 bg-espresso text-cream">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8">
-      <div class="fade-in text-center max-w-2xl mx-auto mb-14">
-        <p class="text-terracotta font-semibold tracking-[0.2em] text-xs uppercase mb-4">Gallery</p>
-        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight">A closer look around.</h2>
+  <!-- ===================== Trust / carousel ===================== -->
+  <section id="trust">
+    <div class="trust-top">
+      <div class="percent-badge scale-in">
+        <strong>4.8</strong>
+        <p>Average guest rating, 1,240+ reviews</p>
       </div>
-
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 auto-rows-[160px] sm:auto-rows-[200px]" id="gallery-grid">
-        <button class="fade-in gallery-item relative overflow-hidden rounded-xl row-span-2 col-span-1" data-full="https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=1400&q=80" data-caption="Grand Hotel exterior at golden hour">
-          <img src="https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Grand Hotel exterior at golden hour" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </button>
-        <button class="fade-in gallery-item relative overflow-hidden rounded-xl" data-full="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1400&q=80" data-caption="Classic King room detail">
-          <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Classic King room detail" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </button>
-        <button class="fade-in gallery-item relative overflow-hidden rounded-xl" data-full="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1400&q=80" data-caption="Rooftop restaurant seating at dusk">
-          <img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Rooftop restaurant seating at dusk" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </button>
-        <button class="fade-in gallery-item relative overflow-hidden rounded-xl row-span-2" data-full="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=1400&q=80" data-caption="Rooftop pool overlooking the skyline">
-          <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Rooftop pool overlooking the skyline" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </button>
-        <button class="fade-in gallery-item relative overflow-hidden rounded-xl" data-full="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1400&q=80" data-caption="The hotel bar, evening service">
-          <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="The hotel bar, evening service" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </button>
-        <button class="fade-in gallery-item relative overflow-hidden rounded-xl" data-full="https://images.unsplash.com/photo-1611048268330-53de574cae3b?auto=format&fit=crop&w=1400&q=80" data-caption="Spa treatment room">
-          <img src="https://images.unsplash.com/photo-1611048268330-53de574cae3b?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Spa treatment room" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </button>
-        <button class="fade-in gallery-item relative overflow-hidden rounded-xl" data-full="https://images.unsplash.com/photo-1519821172141-b5d8342665e6?auto=format&fit=crop&w=1400&q=80" data-caption="Deluxe Terrace bed and linens">
-          <img src="https://images.unsplash.com/photo-1519821172141-b5d8342665e6?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Deluxe Terrace bed and linens" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </button>
-        <button class="fade-in gallery-item relative overflow-hidden rounded-xl" data-full="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=1400&q=80" data-caption="Guests enjoying dinner service">
-          <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=500&q=80" loading="lazy" alt="Guests enjoying dinner service" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-        </button>
-      </div>
+      <article class="badge-card rise">
+        <span class="badge-chip">01</span>
+        <div>
+          <h3>Trusted by returning guests</h3>
+          <p>From weekend getaways to extended stays, guests choose Grand Hotel because the details are never an afterthought.</p>
+        </div>
+      </article>
     </div>
 
-    <!-- Lightbox -->
-    <div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center bg-espresso/95 px-4" role="dialog" aria-modal="true" aria-label="Image viewer">
-      <button id="lightbox-close" class="absolute top-5 right-5 sm:top-8 sm:right-8 text-cream/80 hover:text-cream text-3xl leading-none" aria-label="Close image viewer">&times;</button>
-      <button id="lightbox-prev" class="absolute left-3 sm:left-8 text-cream/80 hover:text-cream text-4xl leading-none" aria-label="Previous image">&#8249;</button>
-      <button id="lightbox-next" class="absolute right-3 sm:right-8 text-cream/80 hover:text-cream text-4xl leading-none" aria-label="Next image">&#8250;</button>
-      <figure class="max-w-4xl w-full">
-        <img id="lightbox-img" src="" alt="" class="w-full max-h-[80vh] object-contain rounded-lg" />
-        <figcaption id="lightbox-caption" class="text-center text-cream/80 text-sm mt-4"></figcaption>
+    <h2 class="ghost-heading" id="trust-title" aria-hidden="true">
+      <div class="ghost-row"><span class="ghost-word" data-gw="0"></span><span class="ghost-word" data-gw="1"></span></div>
+      <div class="ghost-row"><span class="ghost-word ink" data-gw="2"></span><span class="ghost-word" data-gw="3"></span></div>
+    </h2>
+
+    <div class="coach-wrap">
+      <figure class="coach-card scale-in" id="coach-card">
+        <img id="coach-img" src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=500&q=80" alt="" loading="lazy" />
+        <figcaption class="coach-caption">
+          <strong id="coach-name">Elena Cross</strong>
+          <span id="coach-role">Guest Services Lead</span>
+        </figcaption>
       </figure>
     </div>
+
+    <div class="trust-controls">
+      <button class="arrow-btn outline prev" id="trust-prev" aria-label="Previous">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <div class="dots" id="trust-dots"></div>
+      <button class="arrow-btn solid" id="trust-next" aria-label="Next">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
   </section>
 
-  <!-- ============ TESTIMONIALS ============ -->
-  <section id="testimonials" class="py-20 sm:py-28 bg-cream">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8">
-      <div class="fade-in text-center max-w-2xl mx-auto mb-14">
-        <p class="text-terracotta font-semibold tracking-[0.2em] text-xs uppercase mb-4">Guest Reviews</p>
-        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight">Don't just take our word for it.</h2>
+  <!-- ===================== Programs / Room categories ===================== -->
+  <section id="rooms" class="programs-section">
+    <div class="container">
+      <p class="eyebrow dark">Room categories</p>
+      <h2 class="section-heading">Find your<br />kind of quiet.</h2>
+
+      <ul class="program-list">
+        <li>
+          <a href="#" class="program-row rise" data-anchor="none" data-open-modal>
+            <span class="program-index">01</span>
+            <span class="program-body">
+              <h3>Classic King</h3>
+              <p>A serene retreat with a plush king bed, warm oak floors, and a reading nook.</p>
+            </span>
+            <span class="program-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="program-row rise" data-open-modal>
+            <span class="program-index">02</span>
+            <span class="program-body">
+              <h3>Deluxe Terrace</h3>
+              <p>Our most requested room — a private terrace overlooking the courtyard garden.</p>
+            </span>
+            <span class="program-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="program-row rise" data-open-modal>
+            <span class="program-index">03</span>
+            <span class="program-body">
+              <h3>Executive Suite</h3>
+              <p>A separate living area and workspace, ideal for longer stays and quiet business trips.</p>
+            </span>
+            <span class="program-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="program-row rise" data-open-modal>
+            <span class="program-index">04</span>
+            <span class="program-body">
+              <h3>The Penthouse</h3>
+              <p>The whole top floor: panoramic skyline windows, private dining, and a butler on call.</p>
+            </span>
+            <span class="program-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== Facilities / Explore spaces ===================== -->
+  <section id="amenities" class="facilities-section">
+    <div class="facilities-grid">
+      <div class="facilities-intro">
+        <img class="facilities-icon scale-in" src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=200&q=80" alt="Rooftop pool overlooking the skyline" loading="lazy" />
+        <h2 class="facilities-heading">Tour Our<br />Rooftop &amp;<br />Wellness Spaces</h2>
+        <p class="facilities-body" id="facilities-body"></p>
       </div>
-      <div class="grid md:grid-cols-3 gap-6">
-        <blockquote class="fade-in bg-ivory rounded-2xl p-7 border border-bark/10">
-          <div class="flex text-gold mb-4" aria-label="5 out of 5 stars">★★★★★</div>
-          <p class="text-bark leading-relaxed mb-6">"The Deluxe Terrace room was worth every penny — waking up to coffee on our own balcony overlooking the courtyard was the highlight of our trip."</p>
-          <footer class="flex items-center gap-3">
-            <span class="flex h-10 w-10 rounded-full bg-terracotta/15 text-terracotta-dark font-serif font-semibold items-center justify-center">MR</span>
-            <div class="text-sm">
-              <p class="font-semibold text-espresso">Maria R.</p>
-              <p class="text-bark/70">Verified Guest, Stayed August 2026</p>
-            </div>
-          </footer>
-        </blockquote>
-        <blockquote class="fade-in bg-ivory rounded-2xl p-7 border border-bark/10">
-          <div class="flex text-gold mb-4" aria-label="5 out of 5 stars">★★★★★</div>
-          <p class="text-bark leading-relaxed mb-6">"Staff remembered my name from check-in through checkout. Rooftop restaurant is genuinely excellent, not just 'good for a hotel.' Will be back."</p>
-          <footer class="flex items-center gap-3">
-            <span class="flex h-10 w-10 rounded-full bg-terracotta/15 text-terracotta-dark font-serif font-semibold items-center justify-center">DK</span>
-            <div class="text-sm">
-              <p class="font-semibold text-espresso">David K.</p>
-              <p class="text-bark/70">Verified Guest, Stayed July 2026</p>
-            </div>
-          </footer>
-        </blockquote>
-        <blockquote class="fade-in bg-ivory rounded-2xl p-7 border border-bark/10">
-          <div class="flex text-gold mb-4" aria-label="4 out of 5 stars">★★★★☆</div>
-          <p class="text-bark leading-relaxed mb-6">"Booked the Executive Suite for a work trip — the separate lounge made video calls so much easier. Spa was a great way to unwind after."</p>
-          <footer class="flex items-center gap-3">
-            <span class="flex h-10 w-10 rounded-full bg-terracotta/15 text-terracotta-dark font-serif font-semibold items-center justify-center">AT</span>
-            <div class="text-sm">
-              <p class="font-semibold text-espresso">Aisha T.</p>
-              <p class="text-bark/70">Verified Guest, Stayed June 2026</p>
-            </div>
-          </footer>
-        </blockquote>
+      <div class="court-cards">
+        <figure class="court-tile rise-lg">
+          <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80" alt="Rooftop pool overlooking the skyline" loading="lazy" />
+          <figcaption class="court-caption tone-warm">
+            <strong>Rooftop Pool</strong>
+            <span>Skyline views and cabana service from sunrise to sunset.</span>
+          </figcaption>
+        </figure>
+        <figure class="court-tile rise-lg">
+          <img src="https://images.unsplash.com/photo-1611048268330-53de574cae3b?auto=format&fit=crop&w=800&q=80" alt="Spa treatment room" loading="lazy" />
+          <figcaption class="court-caption tone-deep">
+            <strong>Full-Service Spa</strong>
+            <span>Treatments and a private sauna suite for a total reset.</span>
+          </figcaption>
+        </figure>
+        <figure class="court-tile rise-lg">
+          <img src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=800&q=80" alt="Rooftop restaurant seating at dusk" loading="lazy" />
+          <figcaption class="court-caption tone-gold">
+            <strong>Rooftop Restaurant</strong>
+            <span>Seasonal small plates and skyline views, open nightly.</span>
+          </figcaption>
+        </figure>
+        <figure class="court-tile rise-lg">
+          <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80" alt="The hotel bar, evening service" loading="lazy" />
+          <figcaption class="court-caption tone-dark">
+            <strong>The Hotel Bar</strong>
+            <span>Craft cocktails and a curated wine list until midnight.</span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="amenities-details">
+      <div class="amenities-details-head">
+        <p class="eyebrow dark">Everything included</p>
+        <h3 class="section-heading" style="font-size:1.9rem;">Every stay comes with the essentials, done properly.</h3>
+      </div>
+      <div class="amenities-list">
+        <div class="amenity-item rise">
+          <span class="amenity-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H17.25a4.5 4.5 0 1 0-.108-8.995 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z"/></svg></span>
+          <h3>Rooftop Pool</h3>
+          <p>Heated year-round, open until 10pm, with towel and cabana service.</p>
+        </div>
+        <div class="amenity-item rise">
+          <span class="amenity-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></span>
+          <h3>Full-Service Spa</h3>
+          <p>Massage, facials, and a private sauna suite bookable by the hour.</p>
+        </div>
+        <div class="amenity-item rise">
+          <span class="amenity-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 3.75c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg></span>
+          <h3>24-Hour Gym</h3>
+          <p>Full free-weight rack, cardio, and a stretch studio, open around the clock.</p>
+        </div>
+        <div class="amenity-item rise">
+          <span class="amenity-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12"/></svg></span>
+          <h3>Rooftop Restaurant</h3>
+          <p>Seasonal, locally-sourced menus with a dedicated vegetarian tasting.</p>
+        </div>
+        <div class="amenity-item rise">
+          <span class="amenity-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z"/></svg></span>
+          <h3>Valet Parking</h3>
+          <p>On-site valet with EV charging, available to guests and visitors.</p>
+        </div>
+        <div class="amenity-item rise">
+          <span class="amenity-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0v-.443c0-.055.014-.109.04-.157l2.418-4.435a2.25 2.25 0 0 1 1.972-1.164H16.82a2.25 2.25 0 0 1 1.972 1.164l2.418 4.435c.026.048.04.102.04.157v.443"/></svg></span>
+          <h3>Business Center</h3>
+          <p>Private meeting rooms, printing, and high-speed wired connections.</p>
+        </div>
+        <div class="amenity-item rise">
+          <span class="amenity-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg></span>
+          <h3>Turndown Service</h3>
+          <p>Evening refresh with fresh linens, water, and a hand-written note.</p>
+        </div>
+        <div class="amenity-item rise">
+          <span class="amenity-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21M6.75 6.75h10.5v10.5H6.75V6.75Z"/></svg></span>
+          <h3>Pet Friendly</h3>
+          <p>Dogs and cats welcome with a bed, bowls, and a local walking map.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ LOCATION ============ -->
-  <section id="location" class="py-20 sm:py-28 bg-ivory">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-12 items-center">
-      <div class="fade-in">
-        <p class="text-terracotta font-semibold tracking-[0.2em] text-xs uppercase mb-4">Location</p>
-        <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight mb-6">Steps from everything worth seeing.</h2>
-        <p class="text-bark text-base sm:text-lg leading-relaxed mb-6">
-          Grand Hotel sits on the corner of River Street and 5th Avenue, in the heart of the Riverside District — a five-minute walk from the museum quarter, riverside promenade, and the city's best-reviewed restaurants.
-        </p>
-        <ul class="space-y-3 text-bark">
-          <li class="flex items-start gap-3"><span class="text-terracotta mt-1">•</span><span><strong class="text-espresso">River Promenade</strong> — 4 min walk</span></li>
-          <li class="flex items-start gap-3"><span class="text-terracotta mt-1">•</span><span><strong class="text-espresso">City Art Museum</strong> — 7 min walk</span></li>
-          <li class="flex items-start gap-3"><span class="text-terracotta mt-1">•</span><span><strong class="text-espresso">Central Station</strong> — 10 min walk</span></li>
-          <li class="flex items-start gap-3"><span class="text-terracotta mt-1">•</span><span><strong class="text-espresso">International Airport</strong> — 25 min by car</span></li>
-        </ul>
-      </div>
-      <div class="fade-in rounded-2xl overflow-hidden shadow-xl border border-bark/10 h-[380px] sm:h-[460px]">
-        <iframe
-          title="Grand Hotel location map"
-          src="https://www.openstreetmap.org/export/embed.html?bbox=-74.012%2C40.700%2C-73.990%2C40.715&layer=mapnik&marker=40.7075%2C-74.001"
-          class="w-full h-full border-0"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          aria-label="Map showing Grand Hotel location">
-        </iframe>
-      </div>
+  <!-- ===================== Stats ===================== -->
+  <section id="stats">
+    <div class="container">
+      <p class="eyebrow light">By the numbers</p>
+      <h2 class="stats-heading">A hotel that<br />keeps its word</h2>
+      <dl class="stats-grid">
+        <div class="stat-cell rise">
+          <dt class="sr-only">Years open</dt>
+          <dd><p class="stat-value">15</p><p class="stat-label">Years open</p></dd>
+        </div>
+        <div class="stat-cell rise">
+          <dt class="sr-only">Rooms and suites</dt>
+          <dd><p class="stat-value">64</p><p class="stat-label">Rooms &amp; suites</p></dd>
+        </div>
+        <div class="stat-cell rise">
+          <dt class="sr-only">Average rating</dt>
+          <dd><p class="stat-value">4.8★</p><p class="stat-label">Average rating</p></dd>
+        </div>
+        <div class="stat-cell rise">
+          <dt class="sr-only">Verified guests</dt>
+          <dd><p class="stat-value">1.2K+</p><p class="stat-label">Verified guests</p></dd>
+        </div>
+      </dl>
     </div>
   </section>
 
-  <!-- ============ FINAL CTA ============ -->
-  <section class="relative py-24 sm:py-32">
-    <div class="absolute inset-0">
-      <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1920&q=80" alt="Grand Hotel facade illuminated at night" loading="lazy" class="w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-espresso/80"></div>
-    </div>
-    <div class="fade-in relative z-10 max-w-3xl mx-auto px-5 sm:px-8 text-center">
-      <h2 class="font-serif text-3xl sm:text-5xl font-semibold text-cream leading-tight mb-6">Your room is waiting. Let's make it official.</h2>
-      <p class="text-cream/85 text-lg mb-8">Best rates are always here, direct — plus free cancellation up to 48 hours before arrival.</p>
-      <a href="#booking" class="inline-flex items-center gap-2 rounded-full bg-terracotta hover:bg-terracotta-dark text-cream font-semibold px-8 py-4 text-lg transition-colors shadow-lg">
-        Book Your Stay
-      </a>
+  <!-- ===================== Testimonials ===================== -->
+  <section id="testimonials" class="testimonials-section">
+    <div class="container">
+      <p class="eyebrow dark">What guests say</p>
+      <h2 class="section-heading">Loved by<br />returning guests</h2>
+
+      <ul class="testimonials-grid">
+        <li class="testimonial-card rise">
+          <div>
+            <span class="quote-mark">&ldquo;</span>
+            <blockquote>The Deluxe Terrace room was worth every penny — waking up to coffee on our own balcony was the highlight of our trip.</blockquote>
+          </div>
+          <div class="testimonial-foot">
+            <strong>Maria R.</strong>
+            <span>Verified Guest, Stayed August 2026</span>
+          </div>
+        </li>
+        <li class="testimonial-card rise">
+          <div>
+            <span class="quote-mark">&ldquo;</span>
+            <blockquote>Staff remembered my name from check-in through checkout. Rooftop restaurant is genuinely excellent. Will be back.</blockquote>
+          </div>
+          <div class="testimonial-foot">
+            <strong>David K.</strong>
+            <span>Verified Guest, Stayed July 2026</span>
+          </div>
+        </li>
+        <li class="testimonial-card rise">
+          <div>
+            <span class="quote-mark">&ldquo;</span>
+            <blockquote>Booked the Executive Suite for a work trip — the separate lounge made video calls easy. Spa was a great way to unwind.</blockquote>
+          </div>
+          <div class="testimonial-foot">
+            <strong>Aisha T.</strong>
+            <span>Verified Guest, Stayed June 2026</span>
+          </div>
+        </li>
+      </ul>
     </div>
   </section>
 
 </main>
 
-<!-- ============ FOOTER ============ -->
-<footer class="bg-espresso text-cream/80">
-  <div class="max-w-7xl mx-auto px-5 sm:px-8 py-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+<!-- ===================== Footer ===================== -->
+<footer id="contact">
+  <div class="footer-cta">
     <div>
-      <div class="flex items-center gap-3 mb-4">
-        <span class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-terracotta text-terracotta font-serif text-base font-semibold">GH</span>
-        <span class="font-serif text-xl font-semibold text-cream">Grand Hotel</span>
-      </div>
-      <p class="text-sm leading-relaxed mb-5">Boutique comfort and warm, attentive service in the heart of the Riverside District.</p>
-      <div class="flex items-center gap-3">
-        <a href="#" aria-label="Grand Hotel on Instagram" class="h-9 w-9 flex items-center justify-center rounded-full border border-cream/20 hover:border-terracotta hover:text-terracotta transition-colors">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069ZM12 0C8.741 0 8.332.014 7.052.072 2.695.272.273 2.69.073 7.052.014 8.332 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.332 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.668-.072-4.948-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0Zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881Z"/></svg>
-        </a>
-        <a href="#" aria-label="Grand Hotel on Facebook" class="h-9 w-9 flex items-center justify-center rounded-full border border-cream/20 hover:border-terracotta hover:text-terracotta transition-colors">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12.06C22 6.505 17.523 2 12 2S2 6.505 2 12.06c0 5.02 3.657 9.184 8.438 9.94v-7.03H7.898v-2.91h2.54V9.845c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562v1.877h2.773l-.443 2.91h-2.33V22c4.78-.756 8.437-4.92 8.437-9.94Z"/></svg>
-        </a>
-        <a href="#" aria-label="Grand Hotel on X" class="h-9 w-9 flex items-center justify-center rounded-full border border-cream/20 hover:border-terracotta hover:text-terracotta transition-colors">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231ZM17.083 19.77h1.833L7.084 4.126H5.117Z"/></svg>
-        </a>
-      </div>
+      <p class="eyebrow light">Get started</p>
+      <p class="footer-cta-heading">Ready to<br />stay?</p>
     </div>
-
-    <div>
-      <h3 class="font-serif text-base font-semibold text-cream mb-4">Contact</h3>
-      <ul class="space-y-2 text-sm">
-        <li>128 River Street, Suite 100</li>
-        <li>Riverside District, NY 10001</li>
-        <li><a href="tel:+18005550142" class="hover:text-terracotta transition-colors">+1 (800) 555-0142</a></li>
-        <li><a href="mailto:stay@grandhotel.example" class="hover:text-terracotta transition-colors">stay@grandhotel.example</a></li>
-      </ul>
-    </div>
-
-    <div>
-      <h3 class="font-serif text-base font-semibold text-cream mb-4">Quick Links</h3>
-      <ul class="space-y-2 text-sm">
-        <li><a href="#rooms" class="hover:text-terracotta transition-colors">Rooms &amp; Suites</a></li>
-        <li><a href="#amenities" class="hover:text-terracotta transition-colors">Amenities</a></li>
-        <li><a href="#gallery" class="hover:text-terracotta transition-colors">Gallery</a></li>
-        <li><a href="#location" class="hover:text-terracotta transition-colors">Location</a></li>
-        <li><a href="#booking" class="hover:text-terracotta transition-colors">Book Now</a></li>
-      </ul>
-    </div>
-
-    <div>
-      <h3 class="font-serif text-base font-semibold text-cream mb-4">Stay in the loop</h3>
-      <p class="text-sm mb-4">Seasonal offers and local guides, once a month, no spam.</p>
-      <form id="newsletter-form" class="flex flex-col gap-2" aria-label="Newsletter signup">
-        <label for="newsletter-email" class="sr-only">Email address</label>
-        <input type="email" id="newsletter-email" required placeholder="you@example.com" class="rounded-lg bg-cream/10 border border-cream/20 px-3.5 py-2.5 text-sm text-cream placeholder:text-cream/50 focus:outline-none focus:ring-2 focus:ring-terracotta" />
-        <button type="submit" class="rounded-lg bg-terracotta hover:bg-terracotta-dark text-cream text-sm font-semibold px-4 py-2.5 transition-colors">Subscribe</button>
-      </form>
-      <p id="newsletter-feedback" class="text-xs text-terracotta mt-2" role="status" aria-live="polite"></p>
-    </div>
+    <button class="pill-btn light rise" data-open-modal>
+      Reserve a Stay
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
   </div>
 
-  <div class="border-t border-cream/10">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-cream/60">
-      <p>&copy; <span id="year"></span> Grand Hotel. All rights reserved.</p>
-      <p>Designed with care for the modern traveler.</p>
+  <div class="footer-cols">
+    <div class="footer-brand">
+      <div class="footer-brand-row">
+        <span class="brand-mark">GH</span>
+        <span>Grand Hotel</span>
+      </div>
+      <p>A boutique hotel where focused service meets quietly luxurious rooms.</p>
+      <address>
+        <a href="mailto:stay@grandhotel.example">stay@grandhotel.example</a>
+        <a href="tel:+18005550142">+1 (800) 555-0142</a>
+        <span class="muted">128 River Street, Riverside District, NY 10001</span>
+      </address>
     </div>
+
+    <nav class="footer-nav">
+      <h3>Rooms</h3>
+      <ul>
+        <li><a href="#rooms" data-anchor>Classic King</a></li>
+        <li><a href="#rooms" data-anchor>Deluxe Terrace</a></li>
+        <li><a href="#rooms" data-anchor>Executive Suite</a></li>
+        <li><a href="#rooms" data-anchor>The Penthouse</a></li>
+      </ul>
+    </nav>
+
+    <nav class="footer-nav">
+      <h3>Property</h3>
+      <ul>
+        <li><a href="#amenities" data-anchor>Amenities</a></li>
+        <li><a href="#trust" data-anchor>Our Team</a></li>
+        <li><a href="#testimonials" data-anchor>Reviews</a></li>
+        <li><a href="#" data-open-modal>Events</a></li>
+      </ul>
+    </nav>
+
+    <nav class="footer-nav">
+      <h3>Company</h3>
+      <ul>
+        <li><a href="#trust" data-anchor>About</a></li>
+        <li><a href="#trust" data-anchor>Team</a></li>
+        <li><a href="#" data-open-modal>Careers</a></li>
+        <li><a href="#" data-open-modal>Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; <span id="year"></span> Grand Hotel. All rights reserved.</p>
+    <nav aria-label="Social">
+      <a href="#" aria-label="Instagram">Instagram</a>
+      <a href="#" aria-label="Facebook">Facebook</a>
+      <a href="#" aria-label="X">X</a>
+    </nav>
+    <nav aria-label="Legal">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </nav>
   </div>
 </footer>
 
-<script src="js/main.js"></script>
+<!-- ===================== Contact modal ===================== -->
+<div id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-panel">
+    <div class="modal-head">
+      <div>
+        <p class="eyebrow dark">Book a visit</p>
+        <h2 class="modal-title" id="modal-title-text">Come see<br />the rooms</h2>
+      </div>
+      <button class="icon-close" data-close-modal aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <form class="modal-form" id="contact-form" novalidate>
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+      <input type="hidden" name="_subject" value="New reservation request — Grand Hotel" />
+      <div class="field">
+        <label for="cf-name">Full name</label>
+        <input type="text" id="cf-name" name="name" placeholder="Alex Rivera" required />
+      </div>
+      <div class="field">
+        <label for="cf-email">Email</label>
+        <input type="email" id="cf-email" name="email" placeholder="you@email.com" required />
+      </div>
+      <div class="field">
+        <label for="cf-message">What would you like to book?</label>
+        <textarea id="cf-message" name="message" rows="3" placeholder="I'd love to book the Deluxe Terrace for a weekend in October…"></textarea>
+      </div>
+      <button type="submit" class="modal-submit" id="modal-submit-btn">Request a visit</button>
+      <p id="modal-error" style="display:none;font-size:0.8rem;color:#a65a22;">Something went wrong sending your request — please email us directly at <a href="mailto:stay@grandhotel.example" style="text-decoration:underline;">stay@grandhotel.example</a>.</p>
+    </form>
+
+    <div class="modal-success" id="modal-success">
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+      <h3>Request received</h3>
+      <p id="modal-success-text">Thanks — our team will be in touch to lock in your visit.</p>
+      <button class="pill-btn solid" data-close-modal>Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== Fullscreen menu ===================== -->
+<div id="menu-overlay">
+  <div class="menu-backdrop" data-close-menu></div>
+  <div class="menu-panel">
+    <div class="menu-inner">
+      <div class="menu-top">
+        <span class="menu-brand"><span class="brand-mark">GH</span><span>Grand Hotel</span></span>
+        <button class="menu-close" id="menu-close" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <nav class="menu-nav" aria-label="Fullscreen menu">
+        <a href="#rooms" data-anchor data-menu-link>Rooms</a>
+        <a href="#amenities" data-anchor data-menu-link>Amenities</a>
+        <a href="#testimonials" data-anchor data-menu-link>Reviews</a>
+        <a href="#" data-open-modal data-menu-link>Contact</a>
+      </nav>
+      <div class="menu-bottom">
+        <button class="pill-btn light" data-open-modal>
+          Reserve a Stay
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <nav class="menu-social" aria-label="Social">
+          <a href="#">Instagram</a>
+          <a href="#">Facebook</a>
+          <a href="#">X</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import Lenis from 'lenis';
+
+/* ---------- Adaptive rem scale-up above 1920px ---------- */
+function updateFontScale(){
+  const FONT_BASE = 16, BASE_W = 1920, COEF = 0.6666;
+  const reduction = ((BASE_W - window.innerWidth) / BASE_W) * 100 * COEF;
+  const size = FONT_BASE - (FONT_BASE * reduction) / 100;
+  if (size > FONT_BASE) document.documentElement.style.fontSize = size + "px";
+  else document.documentElement.style.removeProperty("font-size");
+}
+updateFontScale();
+window.addEventListener('resize', updateFontScale);
+
+/* ---------- Lenis smooth scroll ---------- */
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const lenis = new Lenis({ smoothWheel: !reducedMotion });
+function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
+window.scrollTo(0, 0);
+
+function lockScroll(){ document.documentElement.classList.add('scroll-locked'); lenis.stop(); }
+function unlockScroll(){ document.documentElement.classList.remove('scroll-locked'); lenis.start(); }
+
+document.querySelectorAll('[data-anchor]').forEach(el => {
+  el.addEventListener('click', e => {
+    const href = el.getAttribute('href');
+    if (!href || !href.startsWith('#') || href === '#') return;
+    const target = document.querySelector(href);
+    if (!target) return;
+    e.preventDefault();
+    closeMenu();
+    lenis.scrollTo(target, { offset: -8 });
+  });
+});
+
+/* ---------- Word / line reveal helper ---------- */
+function splitWords(el, text){
+  el.innerHTML = '';
+  el.classList.add('clip-container');
+  text.split(' ').forEach((word, i, arr) => {
+    const clip = document.createElement('span');
+    clip.className = 'clip';
+    clip.style.display = 'inline-block';
+    const inner = document.createElement('span');
+    inner.textContent = word + (i < arr.length - 1 ? ' ' : '');
+    clip.appendChild(inner);
+    el.appendChild(clip);
+  });
+}
+function playReveal(el, stagger){
+  el.querySelectorAll('.clip').forEach((clip, i) => {
+    clip.style.transitionDelay = (i * stagger) + 'ms';
+    requestAnimationFrame(() => clip.classList.add('in'));
+  });
+}
+
+splitWords(document.getElementById('hero-title'), 'Arrive & Unwind');
+splitWords(document.getElementById('hero-tagline'), 'Check In, Settle In');
+
+/* ---------- Facilities body: word fade ---------- */
+const facilitiesBodyText = "Reserve time at the rooftop pool, unwind in the spa, or book a private dining table — the same spaces our guests return for.";
+const facilitiesBodyEl = document.getElementById('facilities-body');
+facilitiesBodyText.split(' ').forEach((w, i, arr) => {
+  const span = document.createElement('span');
+  span.className = 'word-fade';
+  span.textContent = w + (i < arr.length - 1 ? ' ' : '');
+  span.style.transitionDelay = (250 + i * 28) + 'ms';
+  facilitiesBodyEl.appendChild(span);
+});
+
+/* ---------- IntersectionObserver reveals ---------- */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    if (el.classList.contains('word-fade-group')) {
+      el.querySelectorAll('.word-fade').forEach(w => w.classList.add('in'));
+    } else {
+      el.classList.add('in');
+    }
+    io.unobserve(el);
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.rise, .rise-lg, .scale-in').forEach((el, i) => {
+  el.style.transitionDelay = (i % 4 * 90) + 'ms';
+  io.observe(el);
+});
+facilitiesBodyEl.classList.add('word-fade-group');
+io.observe(facilitiesBodyEl);
+
+/* ---------- Hero parallax on scroll ---------- */
+const heroSection = document.getElementById('hero');
+const heroParallax = document.getElementById('hero-parallax');
+function updateParallax(){
+  const rect = heroSection.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const progress = Math.min(1, Math.max(0, 1 - (rect.bottom / (vh + rect.height))));
+  heroParallax.style.transform = `translateY(${progress * 12}%)`;
+}
+lenis.on('scroll', updateParallax);
+updateParallax();
+
+/* ---------- Collection slider (hero) ---------- */
+const collectionSlides = [
+  { img: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=200&q=80', brand: 'Grand Hotel', title: 'Classic King', cta: 'View room →' },
+  { img: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=200&q=80', brand: 'Grand Hotel', title: 'Deluxe Terrace', cta: 'View room →' },
+  { img: 'https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=200&q=80', brand: 'Grand Hotel', title: 'The Penthouse', cta: 'View room →' },
+];
+let collectionIndex = 0;
+const collectionCard = document.getElementById('collection-card');
+const collectionDotsEl = document.getElementById('collection-dots');
+
+function renderCollectionDots(){
+  collectionDotsEl.innerHTML = '';
+  collectionSlides.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.innerHTML = '<span></span>';
+    btn.setAttribute('aria-current', i === collectionIndex ? 'true' : 'false');
+    btn.addEventListener('click', () => setCollection(i));
+    collectionDotsEl.appendChild(btn);
+  });
+}
+function setCollection(i){
+  collectionIndex = (i + collectionSlides.length) % collectionSlides.length;
+  const s = collectionSlides[collectionIndex];
+  collectionCard.style.opacity = '0';
+  collectionCard.style.transform = 'translateY(16px) scale(0.96)';
+  setTimeout(() => {
+    document.getElementById('collection-img').src = s.img;
+    document.getElementById('collection-brand').textContent = s.brand;
+    document.getElementById('collection-title').textContent = s.title;
+    collectionCard.style.opacity = '1';
+    collectionCard.style.transform = 'translateY(0) scale(1)';
+  }, 200);
+  renderCollectionDots();
+}
+renderCollectionDots();
+setInterval(() => setCollection(collectionIndex + 1), 3800);
+
+/* ---------- Trust carousel ---------- */
+const trustSlides = [
+  { headline: ['Warm', 'Genuinely', 'Attentive', 'Service'], img: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=500&q=80', name: 'Elena Cross', role: 'Guest Services Lead' },
+  { headline: ['Quiet', 'Comfort,', 'Loudly', 'Praised'], img: 'https://images.unsplash.com/photo-1611048268330-53de574cae3b?auto=format&fit=crop&w=500&q=80', name: 'Priya Shah', role: 'Spa & Wellness Director' },
+  { headline: ['Fifteen', 'Years,', 'Same', 'Warmth'], img: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=500&q=80', name: 'Julien Okafor', role: 'Executive Chef' },
+];
+let trustIndex = 0;
+const ghostWords = document.querySelectorAll('.ghost-word');
+const coachImg = document.getElementById('coach-img');
+const coachName = document.getElementById('coach-name');
+const coachRole = document.getElementById('coach-role');
+const trustDotsEl = document.getElementById('trust-dots');
+
+function renderTrustDots(){
+  trustDotsEl.innerHTML = '';
+  trustSlides.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.innerHTML = '<span></span>';
+    btn.setAttribute('aria-current', i === trustIndex ? 'true' : 'false');
+    btn.addEventListener('click', () => setTrust(i));
+    trustDotsEl.appendChild(btn);
+  });
+}
+function setTrust(i){
+  trustIndex = (i + trustSlides.length) % trustSlides.length;
+  const s = trustSlides[trustIndex];
+  ghostWords.forEach((el, idx) => {
+    el.classList.remove('in');
+    el.textContent = s.headline[idx];
+    void el.offsetWidth;
+  });
+  coachImg.style.opacity = '0';
+  setTimeout(() => {
+    coachImg.src = s.img;
+    coachImg.alt = s.name + ', ' + s.role;
+    coachName.textContent = s.name;
+    coachRole.textContent = s.role;
+    coachImg.style.opacity = '1';
+  }, 250);
+  renderTrustDots();
+}
+document.getElementById('trust-prev').addEventListener('click', () => setTrust(trustIndex - 1));
+document.getElementById('trust-next').addEventListener('click', () => setTrust(trustIndex + 1));
+setTrust(0);
+
+/* fire ghost words in when trust section enters view */
+const trustSection = document.getElementById('trust');
+const trustIo = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      ghostWords.forEach(el => el.classList.add('in'));
+      trustIo.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+trustIo.observe(trustSection);
+
+/* ---------- Loader ---------- */
+const loader = document.getElementById('loader');
+const loaderFill = document.getElementById('loader-fill');
+const loaderMark = document.querySelector('.loader-mark');
+const MIN_VISIBLE = reducedMotion ? 200 : 1400;
+const MAX_VISIBLE = reducedMotion ? 200 : 2600;
+const EXIT_MS = reducedMotion ? 1 : 850;
+
+lockScroll();
+requestAnimationFrame(() => {
+  loaderMark.classList.add('in');
+  setTimeout(() => { loaderFill.style.transitionDelay = '120ms'; loaderFill.style.transform = 'scaleX(1)'; }, 0);
+});
+
+let loaderDone = false;
+function finishLoader(){
+  if (loaderDone) return;
+  loaderDone = true;
+  unlockScroll();
+  document.body.classList.remove('loading');
+  playReveal(document.getElementById('hero-title'), 140);
+  setTimeout(() => playReveal(document.getElementById('hero-tagline'), 110), 350);
+  loader.classList.add('exit');
+  setTimeout(() => loader.remove(), EXIT_MS);
+}
+window.addEventListener('load', () => setTimeout(finishLoader, MIN_VISIBLE));
+setTimeout(finishLoader, MAX_VISIBLE);
+
+/* ---------- Contact modal ---------- */
+const modal = document.getElementById('contact-modal');
+const modalForm = document.getElementById('contact-form');
+const modalSuccess = document.getElementById('modal-success');
+const modalSubmitBtn = document.getElementById('modal-submit-btn');
+const modalSuccessText = document.getElementById('modal-success-text');
+let lastFocused = null;
+
+function openModal(){
+  lastFocused = document.activeElement;
+  modal.classList.add('open');
+  lockScroll();
+  setTimeout(() => document.getElementById('cf-name').focus(), 120);
+}
+function closeModal(){
+  modal.classList.remove('open');
+  unlockScroll();
+  if (lastFocused) lastFocused.focus();
+  setTimeout(() => {
+    modalForm.reset();
+    modalForm.style.display = '';
+    modalError.style.display = 'none';
+    modalSuccess.classList.remove('show');
+    modalSubmitBtn.disabled = false;
+    modalSubmitBtn.textContent = 'Request a visit';
+  }, 350);
+}
+document.querySelectorAll('[data-open-modal]').forEach(btn => {
+  btn.addEventListener('click', e => { e.preventDefault(); closeMenu(); openModal(); });
+});
+document.querySelectorAll('[data-close-modal]').forEach(btn => btn.addEventListener('click', closeModal));
+
+const FORM_ENDPOINT = 'https://formsubmit.co/ajax/programmingcode12345@gmail.com';
+const modalError = document.getElementById('modal-error');
+
+modalForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  modalError.style.display = 'none';
+  modalSubmitBtn.disabled = true;
+  modalSubmitBtn.textContent = 'Sending…';
+
+  const name = document.getElementById('cf-name').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  const message = document.getElementById('cf-message').value.trim();
+
+  try {
+    const res = await fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name,
+        email,
+        message,
+        _subject: `New reservation request from ${name || 'a guest'}`,
+      }),
+    });
+    if (!res.ok) throw new Error('Request failed with status ' + res.status);
+
+    modalForm.style.display = 'none';
+    modalSuccessText.textContent = `Thanks, ${name ? name.split(' ')[0] : 'there'} — our team will be in touch to lock in your visit.`;
+    modalSuccess.classList.add('show');
+  } catch (err) {
+    modalError.style.display = 'block';
+    modalSubmitBtn.disabled = false;
+    modalSubmitBtn.textContent = 'Request a visit';
+  }
+});
+
+/* ---------- Fullscreen menu ---------- */
+const menuOverlay = document.getElementById('menu-overlay');
+const menuOpenBtn = document.getElementById('menu-open');
+function openMenu(){
+  menuOverlay.classList.add('open');
+  menuOpenBtn.setAttribute('aria-expanded', 'true');
+  lockScroll();
+}
+function closeMenu(){
+  if (!menuOverlay.classList.contains('open')) return;
+  menuOverlay.classList.remove('open');
+  menuOpenBtn.setAttribute('aria-expanded', 'false');
+  unlockScroll();
+}
+menuOpenBtn.addEventListener('click', openMenu);
+document.getElementById('menu-close').addEventListener('click', closeMenu);
+document.querySelector('[data-close-menu]').addEventListener('click', closeMenu);
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (modal.classList.contains('open')) closeModal();
+  else if (menuOverlay.classList.contains('open')) closeMenu();
+});
+
+/* ---------- Footer year ---------- */
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
