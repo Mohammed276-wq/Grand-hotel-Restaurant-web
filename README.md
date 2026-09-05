@@ -1,4 +1,4 @@
-# Grand Hotel
+# Grand Hotel Elsahil
 
 A boutique upscale hotel website — single-page, responsive, and ready to deploy with zero build step.
 
