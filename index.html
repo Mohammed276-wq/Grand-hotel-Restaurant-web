@@ -817,8 +817,9 @@
     </div>
 
     <form class="modal-form" id="contact-form" novalidate>
-      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
-      <input type="hidden" name="_subject" value="New reservation request — Grand Hotel" />
+      <input type="text" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" />
+      <input type="hidden" name="access_key" value="37ba2d70-5e24-480d-835a-f9c7b422ef37" />
+      <input type="hidden" name="subject" value="New reservation request — Grand Hotel" />
       <div class="field">
         <label for="cf-name">Full name</label>
         <input type="text" id="cf-name" name="name" placeholder="Alex Rivera" required />
@@ -1134,7 +1135,7 @@ document.querySelectorAll('[data-open-modal]').forEach(btn => {
 });
 document.querySelectorAll('[data-close-modal]').forEach(btn => btn.addEventListener('click', closeModal));
 
-const FORM_ENDPOINT = 'https://formsubmit.co/ajax/programmingcode12345@gmail.com';
+const FORM_ENDPOINT = 'https://api.web3forms.com/submit';
 const modalError = document.getElementById('modal-error');
 
 modalForm.addEventListener('submit', async e => {
@@ -1146,19 +1147,22 @@ modalForm.addEventListener('submit', async e => {
   const name = document.getElementById('cf-name').value.trim();
   const email = document.getElementById('cf-email').value.trim();
   const message = document.getElementById('cf-message').value.trim();
+  const accessKey = document.querySelector('input[name="access_key"]').value;
 
   try {
     const res = await fetch(FORM_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
+        access_key: accessKey,
         name,
         email,
         message,
-        _subject: `New reservation request from ${name || 'a guest'}`,
+        subject: `New reservation request from ${name || 'a guest'}`,
       }),
     });
-    if (!res.ok) throw new Error('Request failed with status ' + res.status);
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Request failed with status ' + res.status);
 
     modalForm.style.display = 'none';
     modalSuccessText.textContent = `Thanks, ${name ? name.split(' ')[0] : 'there'} — our team will be in touch to lock in your visit.`;
